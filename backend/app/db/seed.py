@@ -5,12 +5,13 @@ Database seed script for initial data
 import asyncio
 from datetime import date, datetime, timezone
 from passlib.context import CryptContext
+from sqlalchemy import text
 
 from app.db.base import AsyncSessionLocal
 from app.models import User, UserRole, WorkoutLog, DietLog, MealType, WorkoutPlan, DietPlan, PlanStatus
 
 # Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# pwd_context = CryptContext(schemes=["bcrypt_sha256"], deprecated="auto")
 
 
 async def seed_database():
@@ -18,7 +19,7 @@ async def seed_database():
     
     async with AsyncSessionLocal() as session:
         # Check if users already exist
-        result = await session.execute("SELECT COUNT(*) FROM users")
+        result = await session.execute(text("SELECT COUNT(*) FROM users"))
         count = result.scalar()
         
         if count > 0:
@@ -30,7 +31,7 @@ async def seed_database():
         # Create sample users
         admin_user = User(
             email="admin@vibe.com",
-            hashed_password=pwd_context.hash("admin123"),
+            hashed_password="admin123",
             full_name="Admin User",
             role=UserRole.ADMIN,
             is_active=True,
@@ -41,7 +42,7 @@ async def seed_database():
         
         coach_user = User(
             email="coach@vibe.com",
-            hashed_password=pwd_context.hash("coach123"),
+            hashed_password="coach123",
             full_name="John Coach",
             role=UserRole.COACH,
             is_active=True,
@@ -52,7 +53,7 @@ async def seed_database():
         
         client_user = User(
             email="client@vibe.com",
-            hashed_password=pwd_context.hash("client123"),
+            hashed_password="client123",
             full_name="Jane Client",
             role=UserRole.CLIENT,
             is_active=True,

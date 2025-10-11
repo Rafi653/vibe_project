@@ -20,6 +20,10 @@ function AdminDashboard() {
   const [platformUsageData, setPlatformUsageData] = useState(null);
   const [systemHealthData, setSystemHealthData] = useState(null);
 
+  // Feedback data states
+  const [feedbackList, setFeedbackList] = useState([]);
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+
   const [userForm, setUserForm] = useState({
     full_name: '',
     email: '',
@@ -30,6 +34,7 @@ function AdminDashboard() {
   useEffect(() => {
     loadDashboardData();
     loadChartData();
+    loadFeedback();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
@@ -109,6 +114,47 @@ function AdminDashboard() {
         setError(err.message || 'Failed to delete user');
       }
     }
+  };
+
+  const loadFeedback = async () => {
+    try {
+      setFeedbackLoading(true);
+      const feedbackData = await adminService.getAllFeedback(token);
+      setFeedbackList(feedbackData);
+    } catch (err) {
+      console.error('Failed to load feedback:', err);
+    } finally {
+      setFeedbackLoading(false);
+    }
+  };
+
+  const handleUpdateFeedbackStatus = async (feedbackId, newStatus) => {
+    try {
+      await adminService.updateFeedbackStatus(token, feedbackId, newStatus);
+      loadFeedback();
+    } catch (err) {
+      setError(err.message || 'Failed to update feedback status');
+    }
+  };
+
+  const getStatusLabel = (status) => {
+    const statusLabels = {
+      'open': 'Open',
+      'actively_looking': 'Actively Looking Into It',
+      'resolved': 'Resolved',
+      'cannot_work_on': 'Cannot Work On It'
+    };
+    return statusLabels[status] || status;
+  };
+
+  const getStatusColor = (status) => {
+    const statusColors = {
+      'open': '#2196F3',
+      'actively_looking': '#FF9800',
+      'resolved': '#4CAF50',
+      'cannot_work_on': '#9E9E9E'
+    };
+    return statusColors[status] || '#9E9E9E';
   };
 
   if (loading) {
@@ -381,6 +427,124 @@ function AdminDashboard() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Feedback Management */}
+      <div className="recent-logs">
+        <h3>Feedback Management 💬</h3>
+        {feedbackLoading ? (
+          <p>Loading feedback...</p>
+        ) : feedbackList.length === 0 ? (
+          <p>No feedback submissions yet.</p>
+        ) : (
+          <div className="feedback-table-container">
+            <table className="feedback-table">
+              <thead>
+                <tr>
+                  <th>User/Email</th>
+                  <th>Message</th>
+                  <th>Timestamp</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {feedbackList.map((feedback) => (
+                  <tr key={feedback.id}>
+                    <td>
+                      {feedback.is_anonymous ? (
+                        <span style={{ color: '#999' }}>Anonymous</span>
+                      ) : (
+                        <div>
+                          {feedback.name && <div><strong>{feedback.name}</strong></div>}
+                          {feedback.email && <div style={{ fontSize: '0.9em', color: '#666' }}>{feedback.email}</div>}
+                          {!feedback.name && !feedback.email && <span style={{ color: '#999' }}>No contact info</span>}
+                        </div>
+                      )}
+                    </td>
+                    <td>
+                      <div style={{ maxWidth: '400px', wordWrap: 'break-word' }}>
+                        {feedback.message}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ fontSize: '0.9em' }}>
+                        {new Date(feedback.created_at).toLocaleString()}
+                      </div>
+                    </td>
+                    <td>
+                      <span 
+                        className="status-badge"
+                        style={{ 
+                          backgroundColor: getStatusColor(feedback.status),
+                          color: 'white',
+                          padding: '0.3rem 0.6rem',
+                          borderRadius: '4px',
+                          fontSize: '0.85em',
+                          display: 'inline-block'
+                        }}
+                      >
+                        {getStatusLabel(feedback.status)}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <button
+                          className="feedback-action-btn"
+                          onClick={() => handleUpdateFeedbackStatus(feedback.id, 'actively_looking')}
+                          disabled={feedback.status === 'actively_looking'}
+                          style={{ 
+                            padding: '0.4rem 0.6rem',
+                            fontSize: '0.85rem',
+                            backgroundColor: feedback.status === 'actively_looking' ? '#ccc' : '#FF9800',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: feedback.status === 'actively_looking' ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          👀 Actively Looking
+                        </button>
+                        <button
+                          className="feedback-action-btn"
+                          onClick={() => handleUpdateFeedbackStatus(feedback.id, 'resolved')}
+                          disabled={feedback.status === 'resolved'}
+                          style={{ 
+                            padding: '0.4rem 0.6rem',
+                            fontSize: '0.85rem',
+                            backgroundColor: feedback.status === 'resolved' ? '#ccc' : '#4CAF50',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: feedback.status === 'resolved' ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          ✅ Resolved
+                        </button>
+                        <button
+                          className="feedback-action-btn"
+                          onClick={() => handleUpdateFeedbackStatus(feedback.id, 'cannot_work_on')}
+                          disabled={feedback.status === 'cannot_work_on'}
+                          style={{ 
+                            padding: '0.4rem 0.6rem',
+                            fontSize: '0.85rem',
+                            backgroundColor: feedback.status === 'cannot_work_on' ? '#ccc' : '#9E9E9E',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            cursor: feedback.status === 'cannot_work_on' ? 'not-allowed' : 'pointer'
+                          }}
+                        >
+                          ❌ Cannot Work On
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

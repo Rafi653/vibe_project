@@ -3,7 +3,17 @@ Schemas for feedback operations
 """
 
 from typing import Optional
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
+from enum import Enum
+
+
+class FeedbackStatus(str, Enum):
+    """Feedback status enumeration"""
+    OPEN = "open"
+    ACTIVELY_LOOKING = "actively_looking"
+    RESOLVED = "resolved"
+    CANNOT_WORK_ON = "cannot_work_on"
 
 
 class FeedbackBase(BaseModel):
@@ -20,11 +30,19 @@ class FeedbackCreate(FeedbackBase):
     pass
 
 
+class FeedbackStatusUpdate(BaseModel):
+    """Schema for updating feedback status"""
+    status: FeedbackStatus
+
+
 class FeedbackResponse(FeedbackBase):
     """Schema for feedback response"""
     id: int
     user_id: Optional[int] = None
     user_agent: Optional[str] = None
+    status: FeedbackStatus
+    created_at: datetime
+    updated_at: datetime
     
     model_config = {
         "from_attributes": True

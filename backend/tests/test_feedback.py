@@ -158,12 +158,13 @@ async def test_update_feedback_status(admin_token, test_db):
     test_db.add(feedback)
     await test_db.commit()
     await test_db.refresh(feedback)
+    feedback_id = feedback.id
     
     # Update status
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.put(
-            f"/api/v1/feedback/{feedback.id}",
+            f"/api/v1/feedback/{feedback_id}",
             json={"status": "actively_looking"},
             headers={"Authorization": f"Bearer {admin_token}"}
         )
@@ -172,9 +173,10 @@ async def test_update_feedback_status(admin_token, test_db):
     data = response.json()
     assert data["status"] == "actively_looking"
     
-    # Verify in database
+    # Verify in database - refresh the session to get latest data
+    test_db.expire_all()
     result = await test_db.execute(
-        select(Feedback).where(Feedback.id == feedback.id)
+        select(Feedback).where(Feedback.id == feedback_id)
     )
     updated_feedback = result.scalar_one()
     assert updated_feedback.status == FeedbackStatus.ACTIVELY_LOOKING

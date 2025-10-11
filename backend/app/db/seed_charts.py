@@ -61,7 +61,7 @@ async def seed_charts_data():
         
         # Create multiple users
         admin_user = User(
-            email="admin2@vibe.com",
+            email="admin_3@vibe.com",
             hashed_password=get_password_hash("admin123"),
             full_name="Admin User",
             role=UserRole.ADMIN,
@@ -99,7 +99,7 @@ async def seed_charts_data():
         coaches = []
         for i, coach_data in enumerate(coaches_data, 1):
             coach = User(
-                email=f"coach{i}@vibe.com",
+                email=f"coach__{i}@vibe.com",
                 hashed_password=get_password_hash(f"coach{i}123"),
                 full_name=coach_data["name"],
                 role=UserRole.COACH,
@@ -134,7 +134,7 @@ async def seed_charts_data():
         clients = []
         for i in range(1, 11):
             client = User(
-                email=f"client{i}@vibe.com",
+                email=f"client_{i}@vibe.com",
                 hashed_password=get_password_hash(f"client{i}123"),
                 full_name=f"Client {chr(64+i)}",
                 role=UserRole.CLIENT,

@@ -222,3 +222,46 @@ export const deleteDietPlan = async (token, planId) => {
     throw new Error(error.detail || 'Failed to delete diet plan');
   }
 };
+
+// Chart Data
+export const getClientOverviewChart = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/coach/charts/client-overview`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get client overview chart');
+  }
+
+  return response.json();
+};
+
+export const getEngagementChart = async (token, days = 30) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/coach/charts/engagement?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get engagement chart');
+  }
+
+  return response.json();
+};
+
+export const getPlanAssignmentsChart = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/coach/charts/plan-assignments`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get plan assignments chart');
+  }
+
+  return response.json();
+};

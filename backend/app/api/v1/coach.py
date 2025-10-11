@@ -368,3 +368,154 @@ async def delete_diet_plan(
     
     await db.delete(plan)
     await db.commit()
+
+
+# Chart Data Endpoints
+@router.get("/charts/client-overview")
+async def get_client_overview_chart(
+    current_user: User = Depends(require_coach),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get overview of client activity for coach dashboard"""
+    thirty_days_ago = date.today() - timedelta(days=30)
+    
+    # Get all clients
+    clients_result = await db.execute(
+        select(User)
+        .where(User.role == UserRole.CLIENT)
+    )
+    clients = clients_result.scalars().all()
+    
+    client_data = []
+    for client in clients:
+        # Get workout count
+        workout_count = await db.execute(
+            select(func.count(WorkoutLog.id))
+            .where(
+                and_(
+                    WorkoutLog.user_id == client.id,
+                    WorkoutLog.workout_date >= thirty_days_ago
+                )
+            )
+        )
+        
+        # Get diet log count
+        diet_count = await db.execute(
+            select(func.count(DietLog.id))
+            .where(
+                and_(
+                    DietLog.user_id == client.id,
+                    DietLog.meal_date >= thirty_days_ago
+                )
+            )
+        )
+        
+        # Get active plans
+        active_plans = await db.execute(
+            select(func.count(WorkoutPlan.id))
+            .where(
+                and_(
+                    WorkoutPlan.user_id == client.id,
+                    WorkoutPlan.status == "active"
+                )
+            )
+        )
+        
+        client_data.append({
+            "client_name": client.full_name,
+            "client_id": client.id,
+            "workouts": workout_count.scalar() or 0,
+            "diet_logs": diet_count.scalar() or 0,
+            "active_plans": active_plans.scalar() or 0
+        })
+    
+    return {"clients": client_data}
+
+
+@router.get("/charts/engagement")
+async def get_engagement_chart(
+    days: int = 30,
+    current_user: User = Depends(require_coach),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get client engagement metrics over time"""
+    start_date = date.today() - timedelta(days=days)
+    
+    # Get daily workout logs across all clients
+    workout_result = await db.execute(
+        select(
+            WorkoutLog.workout_date,
+            func.count(WorkoutLog.id).label('count')
+        )
+        .join(User, WorkoutLog.user_id == User.id)
+        .where(
+            and_(
+                User.role == UserRole.CLIENT,
+                WorkoutLog.workout_date >= start_date
+            )
+        )
+        .group_by(WorkoutLog.workout_date)
+        .order_by(WorkoutLog.workout_date)
+    )
+    workout_data = workout_result.all()
+    
+    # Get daily diet logs across all clients
+    diet_result = await db.execute(
+        select(
+            DietLog.meal_date,
+            func.count(DietLog.id).label('count')
+        )
+        .join(User, DietLog.user_id == User.id)
+        .where(
+            and_(
+                User.role == UserRole.CLIENT,
+                DietLog.meal_date >= start_date
+            )
+        )
+        .group_by(DietLog.meal_date)
+        .order_by(DietLog.meal_date)
+    )
+    diet_data = diet_result.all()
+    
+    return {
+        "workouts": {
+            "labels": [row.workout_date.isoformat() for row in workout_data],
+            "data": [row.count for row in workout_data]
+        },
+        "diet_logs": {
+            "labels": [row.meal_date.isoformat() for row in diet_data],
+            "data": [row.count for row in diet_data]
+        }
+    }
+
+
+@router.get("/charts/plan-assignments")
+async def get_plan_assignments_chart(
+    current_user: User = Depends(require_coach),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get plan assignment statistics"""
+    # Count plans by status
+    workout_plan_result = await db.execute(
+        select(
+            WorkoutPlan.status,
+            func.count(WorkoutPlan.id).label('count')
+        )
+        .group_by(WorkoutPlan.status)
+    )
+    
+    diet_plan_result = await db.execute(
+        select(
+            DietPlan.status,
+            func.count(DietPlan.id).label('count')
+        )
+        .group_by(DietPlan.status)
+    )
+    
+    workout_plans = {row.status: row.count for row in workout_plan_result.all()}
+    diet_plans = {row.status: row.count for row in diet_plan_result.all()}
+    
+    return {
+        "workout_plans": workout_plans,
+        "diet_plans": diet_plans
+    }

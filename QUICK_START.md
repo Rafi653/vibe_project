@@ -235,6 +235,26 @@ alembic upgrade head
 
 ---
 
+## 🌐 Share Your App with ngrok (Optional)
+
+Want to share your local app with friends or testers?
+
+```bash
+# Install ngrok (macOS)
+brew install ngrok/ngrok/ngrok
+
+# Start ngrok tunnels
+./scripts/start-ngrok.sh
+```
+
+This will expose your app to the internet with public URLs. See [NGROK_SETUP.md](NGROK_SETUP.md) for:
+- Complete setup instructions
+- Security best practices
+- CORS configuration
+- Troubleshooting
+
+---
+
 ## 🎯 Next Steps
 
 1. **Explore the API**
@@ -247,7 +267,12 @@ alembic upgrade head
    - Add endpoints in `backend/app/api/v1/`
    - Generate migrations with Alembic
 
-3. **Deploy to production**
+3. **Share for testing**
+   - Use ngrok to get public URLs
+   - Share with testers and collect feedback
+   - Monitor via ngrok inspector
+
+4. **Deploy to production**
    - Review security settings
    - Set production environment variables
    - Configure proper database

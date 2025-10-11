@@ -18,9 +18,17 @@ app = FastAPI(
 )
 
 # Configure CORS
+allowed_origins = list(settings.ALLOWED_ORIGINS)
+
+# Add ngrok URLs if configured
+if settings.NGROK_FRONTEND_URL:
+    allowed_origins.append(settings.NGROK_FRONTEND_URL)
+if settings.NGROK_BACKEND_URL:
+    allowed_origins.append(settings.NGROK_BACKEND_URL)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGINS,
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

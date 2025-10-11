@@ -44,6 +44,9 @@ build/
 .env.local
 .env.*.local
 
+# ngrok configuration with auth tokens (keep template in repo)
+ngrok.yml
+
 # OS generated files
 Thumbs.db
 .DS_Store

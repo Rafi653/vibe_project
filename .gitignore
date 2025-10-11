@@ -56,3 +56,13 @@ logs/
 out/
 tmp/
 temp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+postgres_data/
+
+# Alembic
+*.pyc
+__pycache__/

@@ -39,7 +39,8 @@ backend/
 
 - Python 3.11 or higher
 - pip (Python package manager)
-- PostgreSQL (optional for now, will be needed later)
+- PostgreSQL 16+ (or use Docker - recommended)
+- Docker Desktop (optional but recommended for easy setup)
 
 ### Installation
 
@@ -69,6 +70,25 @@ backend/
    cp .env.example .env
    # Edit .env with your configuration
    ```
+
+5. **Set up the database**:
+   
+   **Option A: Using Docker (Recommended)**
+   ```bash
+   # From the project root directory
+   cd ..
+   docker-compose up -d postgres
+   cd backend
+   
+   # Run migrations
+   alembic upgrade head
+   
+   # Seed the database (optional)
+   python -m app.db.seed
+   ```
+   
+   **Option B: Local PostgreSQL**
+   See [DATABASE_SETUP.md](DATABASE_SETUP.md) for detailed instructions.
 
 ### Running the Application
 
@@ -151,9 +171,30 @@ Key environment variables (see `.env.example` for all options):
 - `SECRET_KEY`: Secret key for JWT tokens
 - `ALLOWED_ORIGINS`: CORS allowed origins
 
+## Database
+
+The application uses PostgreSQL with SQLAlchemy 2.0 (async) and Alembic for migrations.
+
+### Data Models
+- **User**: User accounts with roles (client, coach, admin)
+- **WorkoutLog**: Individual workout session tracking
+- **DietLog**: Daily meal and nutrition tracking
+- **WorkoutPlan**: Structured workout programs
+- **DietPlan**: Structured diet programs
+
+### Quick Start
+```bash
+# Using Docker (easiest)
+docker-compose up -d
+docker-compose exec backend alembic upgrade head
+
+# See DATABASE_SETUP.md for detailed setup instructions
+```
+
+For comprehensive database documentation, see [DATABASE_SETUP.md](DATABASE_SETUP.md).
+
 ## Next Steps
 
-- Set up PostgreSQL database integration
 - Implement authentication and authorization
 - Create user management endpoints
 - Add workout and coaching features

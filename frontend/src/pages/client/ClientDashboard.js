@@ -135,8 +135,8 @@ function ClientDashboard() {
   return (
     <div className="page-container">
       <div className="dashboard-header">
-        <h1>Client Dashboard</h1>
-        <p>Welcome to your personal fitness portal</p>
+        <h1>Client Dashboard 💪</h1>
+        <p>Welcome to your personal fitness portal 🎯</p>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -144,23 +144,23 @@ function ClientDashboard() {
       {/* Progress Summary */}
       {progress && (
         <div className="progress-summary">
-          <h2>Your Progress (Last 30 Days)</h2>
+          <h2>Your Progress (Last 30 Days) 📈</h2>
           <div className="stats-grid">
             <div className="stat-card">
               <h3>{progress.last_30_days.workout_sessions}</h3>
-              <p>Workout Sessions</p>
+              <p>🏋️ Workout Sessions</p>
             </div>
             <div className="stat-card">
               <h3>{progress.last_30_days.diet_logs}</h3>
-              <p>Diet Logs</p>
+              <p>🍎 Diet Logs</p>
             </div>
             <div className="stat-card">
               <h3>{progress.active_plans.workout_plans}</h3>
-              <p>Active Workout Plans</p>
+              <p>💪 Active Workout Plans</p>
             </div>
             <div className="stat-card">
               <h3>{progress.active_plans.diet_plans}</h3>
-              <p>Active Diet Plans</p>
+              <p>🥗 Active Diet Plans</p>
             </div>
           </div>
         </div>
@@ -169,17 +169,17 @@ function ClientDashboard() {
       {/* Action Buttons */}
       <div className="action-buttons">
         <button onClick={() => setShowWorkoutForm(!showWorkoutForm)} className="primary-button">
-          {showWorkoutForm ? 'Cancel' : 'Log Workout'}
+          {showWorkoutForm ? '❌ Cancel' : '🏋️ Log Workout'}
         </button>
         <button onClick={() => setShowDietForm(!showDietForm)} className="primary-button">
-          {showDietForm ? 'Cancel' : 'Log Meal'}
+          {showDietForm ? '❌ Cancel' : '🍽️ Log Meal'}
         </button>
       </div>
 
       {/* Workout Form */}
       {showWorkoutForm && (
         <div className="form-card">
-          <h3>Log Workout</h3>
+          <h3>🏋️ Log Workout</h3>
           <form onSubmit={handleWorkoutSubmit}>
             <div className="form-row">
               <div className="form-group">
@@ -252,7 +252,7 @@ function ClientDashboard() {
       {/* Diet Form */}
       {showDietForm && (
         <div className="form-card">
-          <h3>Log Meal</h3>
+          <h3>🍽️ Log Meal</h3>
           <form onSubmit={handleDietSubmit}>
             <div className="form-row">
               <div className="form-group">
@@ -340,12 +340,12 @@ function ClientDashboard() {
 
       {/* Charts Section */}
       <div className="charts-section">
-        <h2>Progress Analytics</h2>
+        <h2>📊 Progress Analytics</h2>
         
         {/* Workout Frequency Chart */}
         {workoutFrequencyData && workoutFrequencyData.labels.length > 0 && (
           <div className="chart-card">
-            <h3>Workout Frequency (Last 30 Days)</h3>
+            <h3>🏋️ Workout Frequency (Last 30 Days)</h3>
             <LineChart
               labels={workoutFrequencyData.labels}
               datasets={[
@@ -364,7 +364,7 @@ function ClientDashboard() {
         {/* Diet Adherence Chart */}
         {dietAdherenceData && dietAdherenceData.labels.length > 0 && (
           <div className="chart-card">
-            <h3>Diet Adherence (Last 30 Days)</h3>
+            <h3>🍎 Diet Adherence (Last 30 Days)</h3>
             <LineChart
               labels={dietAdherenceData.labels}
               datasets={[
@@ -389,7 +389,7 @@ function ClientDashboard() {
         {/* Macros Breakdown Chart */}
         {dietAdherenceData && dietAdherenceData.labels.length > 0 && (
           <div className="chart-card">
-            <h3>Macronutrient Tracking (Last 30 Days)</h3>
+            <h3>🥗 Macronutrient Tracking (Last 30 Days)</h3>
             <BarChart
               labels={dietAdherenceData.labels}
               datasets={[
@@ -416,7 +416,7 @@ function ClientDashboard() {
         {/* Workout Volume/Progress Chart */}
         {workoutVolumeData && workoutVolumeData.exercises && workoutVolumeData.exercises.length > 0 && (
           <div className="chart-card">
-            <h3>Strength Progress (Last 90 Days)</h3>
+            <h3>💪 Strength Progress (Last 90 Days)</h3>
             <div className="form-group" style={{ marginBottom: '1rem' }}>
               <label>Select Exercise:</label>
               <select 

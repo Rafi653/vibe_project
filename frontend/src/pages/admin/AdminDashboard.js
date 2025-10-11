@@ -118,8 +118,8 @@ function AdminDashboard() {
   return (
     <div className="page-container">
       <div className="dashboard-header">
-        <h1>Admin Dashboard</h1>
-        <p>System management and oversight</p>
+        <h1>Admin Dashboard 🛠️</h1>
+        <p>System management and oversight 📊</p>
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -127,55 +127,55 @@ function AdminDashboard() {
       {/* Platform Statistics */}
       {stats && (
         <div className="progress-summary">
-          <h2>Platform Statistics</h2>
+          <h2>📊 Platform Statistics</h2>
           <div className="stats-grid">
             <div className="stat-card">
               <h3>{stats.users.total}</h3>
-              <p>Total Users</p>
+              <p>👥 Total Users</p>
             </div>
             <div className="stat-card">
               <h3>{stats.users.active}</h3>
-              <p>Active Users</p>
+              <p>✅ Active Users</p>
             </div>
             <div className="stat-card">
               <h3>{stats.users.clients}</h3>
-              <p>Clients</p>
+              <p>💪 Clients</p>
             </div>
             <div className="stat-card">
               <h3>{stats.users.coaches}</h3>
-              <p>Coaches</p>
+              <p>🏋️ Coaches</p>
             </div>
           </div>
 
-          <h2>Activity (Last 30 Days)</h2>
+          <h2>📈 Activity (Last 30 Days)</h2>
           <div className="stats-grid">
             <div className="stat-card">
               <h3>{stats.last_30_days.workouts}</h3>
-              <p>Workout Sessions</p>
+              <p>🏋️ Workout Sessions</p>
             </div>
             <div className="stat-card">
               <h3>{stats.last_30_days.diet_logs}</h3>
-              <p>Diet Logs</p>
+              <p>🍎 Diet Logs</p>
             </div>
             <div className="stat-card">
               <h3>{stats.plans.active_workout_plans}</h3>
-              <p>Active Workout Plans</p>
+              <p>💪 Active Workout Plans</p>
             </div>
             <div className="stat-card">
               <h3>{stats.plans.active_diet_plans}</h3>
-              <p>Active Diet Plans</p>
+              <p>🥗 Active Diet Plans</p>
             </div>
           </div>
 
-          <h2>All Time Activity</h2>
+          <h2>🔥 All Time Activity</h2>
           <div className="stats-grid">
             <div className="stat-card">
               <h3>{stats.activity.total_workouts}</h3>
-              <p>Total Workouts</p>
+              <p>🏋️ Total Workouts</p>
             </div>
             <div className="stat-card">
               <h3>{stats.activity.total_diet_logs}</h3>
-              <p>Total Diet Logs</p>
+              <p>🍎 Total Diet Logs</p>
             </div>
           </div>
         </div>
@@ -183,12 +183,12 @@ function AdminDashboard() {
 
       {/* Charts Section */}
       <div className="charts-section">
-        <h2>Platform Analytics</h2>
+        <h2>📊 Platform Analytics</h2>
         
         {/* User Growth Chart */}
         {userGrowthData && userGrowthData.labels && userGrowthData.labels.length > 0 && (
           <div className="chart-card">
-            <h3>User Growth (Last 90 Days)</h3>
+            <h3>📈 User Growth (Last 90 Days)</h3>
             <LineChart
               labels={userGrowthData.labels}
               datasets={[

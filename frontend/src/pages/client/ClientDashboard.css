@@ -1,54 +1,94 @@
 .dashboard-header {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dashboard-header h1 {
-  color: #282c34;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .dashboard-header p {
   color: #666;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  font-weight: 400;
 }
 
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .dashboard-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s;
-  border-left: 4px solid #61dafb;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .dashboard-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
 }
 
 .dashboard-card h3 {
   color: #282c34;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
 }
 
 .dashboard-card p {
   color: #666;
-  line-height: 1.6;
+  line-height: 1.8;
+  font-size: 1.05rem;
 }
 
 .progress-summary {
-  margin: 2rem 0;
+  margin: 3rem 0;
 }
 
 .progress-summary h2 {
-  margin-bottom: 1rem;
-  color: #282c34;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .stats-grid {
@@ -59,22 +99,46 @@
 }
 
 .stat-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.15);
 }
 
 .stat-card h3 {
-  font-size: 2.5rem;
-  color: #61dafb;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0 0 0.5rem 0;
+  font-weight: 700;
 }
 
 .stat-card p {
   color: #666;
   margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .action-buttons {
@@ -84,32 +148,46 @@
 }
 
 .primary-button {
-  background-color: #61dafb;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
+  padding: 0.9rem 2rem;
+  border-radius: 30px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
 .primary-button:hover {
-  background-color: #4fa8c5;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5568d3 0%, #65398b 100%);
 }
 
 .form-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   margin: 2rem 0;
+  transition: all 0.3s ease;
+}
+
+.form-card:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
 .form-card h3 {
   margin-top: 0;
   margin-bottom: 1.5rem;
-  color: #282c34;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .form-row {
@@ -144,7 +222,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #61dafb;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .recent-logs {
@@ -163,10 +242,16 @@
 }
 
 .log-item {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.log-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.1);
 }
 
 .log-header {
@@ -208,28 +293,42 @@
 
 /* Charts Section */
 .charts-section {
-  margin: 3rem 0;
+  margin: 4rem 0;
 }
 
 .charts-section h2 {
-  color: #282c34;
-  margin-bottom: 2rem;
-  font-size: 1.8rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
 }
 
 .chart-card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2.5rem;
+  transition: all 0.3s ease;
+}
+
+.chart-card:hover {
+  box-shadow: 0 15px 40px rgba(102, 126, 234, 0.12);
 }
 
 .chart-card h3 {
-  color: #282c34;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-top: 0;
   margin-bottom: 1.5rem;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 
 .exercise-selector {
@@ -237,18 +336,22 @@
 }
 
 .export-button {
-  background-color: #4caf50;
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(86, 171, 47, 0.3);
 }
 
 .export-button:hover {
-  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(86, 171, 47, 0.4);
+  background: linear-gradient(135deg, #4d9b2a 0%, #98d058 100%);
 }
 
 /* Responsive Design */

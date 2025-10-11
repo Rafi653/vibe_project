@@ -55,6 +55,8 @@ class User(Base, TimestampMixin):
     competitions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     qualifications: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     specialties: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    strengths: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    available_slots: Mapped[int] = mapped_column(Integer, default=10, nullable=False)
     
     # Custom fields for extensibility
     custom_fields: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
@@ -71,6 +73,12 @@ class User(Base, TimestampMixin):
     )
     diet_plans: Mapped[list["DietPlan"]] = relationship(
         "DietPlan", back_populates="user", cascade="all, delete-orphan"
+    )
+    coach_bookings: Mapped[list["Booking"]] = relationship(
+        "Booking", foreign_keys="[Booking.coach_id]", back_populates="coach", cascade="all, delete-orphan"
+    )
+    client_bookings: Mapped[list["Booking"]] = relationship(
+        "Booking", foreign_keys="[Booking.client_id]", back_populates="client", cascade="all, delete-orphan"
     )
     
     def __repr__(self) -> str:

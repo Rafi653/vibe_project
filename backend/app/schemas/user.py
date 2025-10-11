@@ -51,6 +51,7 @@ class CoachProfileUpdate(BaseModel):
     competitions: Optional[str] = None
     qualifications: Optional[str] = None
     specialties: Optional[str] = None
+    strengths: Optional[str] = None
     custom_fields: Optional[Dict[str, Any]] = None
 
 

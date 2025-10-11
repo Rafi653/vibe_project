@@ -61,9 +61,28 @@ def client_token(client_user):
     return create_access_token({"sub": client_user.email, "user_id": client_user.id})
 
 
+@pytest.fixture
+async def booking(test_db, coach_user, client_user):
+    """Create a booking between coach and client"""
+    from app.models.booking import Booking, BookingStatus
+    from datetime import datetime, timezone, timedelta
+    
+    booking = Booking(
+        coach_id=coach_user.id,
+        client_id=client_user.id,
+        slot_number=1,
+        scheduled_at=datetime.now(timezone.utc) + timedelta(days=7),
+        status=BookingStatus.CONFIRMED
+    )
+    test_db.add(booking)
+    await test_db.commit()
+    await test_db.refresh(booking)
+    return booking
+
+
 @pytest.mark.asyncio
-async def test_get_clients(coach_token, client_user, test_db):
-    """Test getting list of all clients"""
+async def test_get_clients(coach_token, client_user, booking, test_db):
+    """Test getting list of all clients connected through bookings"""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get(
@@ -91,8 +110,8 @@ async def test_get_clients_unauthorized(client_token):
 
 
 @pytest.mark.asyncio
-async def test_get_client(coach_token, client_user, test_db):
-    """Test getting a specific client's profile"""
+async def test_get_client(coach_token, client_user, booking, test_db):
+    """Test getting a specific client's profile (only if connected through booking)"""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         response = await ac.get(
@@ -208,8 +227,8 @@ async def test_create_diet_plan(coach_token, client_user, test_db):
 
 
 @pytest.mark.asyncio
-async def test_get_client_workout_logs(coach_token, client_user, test_db):
-    """Test getting a client's workout logs"""
+async def test_get_client_workout_logs(coach_token, client_user, booking, test_db):
+    """Test getting a client's workout logs (only if connected through booking)"""
     # Create a workout log
     log = WorkoutLog(
         user_id=client_user.id,
@@ -235,8 +254,8 @@ async def test_get_client_workout_logs(coach_token, client_user, test_db):
 
 
 @pytest.mark.asyncio
-async def test_get_client_diet_logs(coach_token, client_user, test_db):
-    """Test getting a client's diet logs"""
+async def test_get_client_diet_logs(coach_token, client_user, booking, test_db):
+    """Test getting a client's diet logs (only if connected through booking)"""
     # Create a diet log
     log = DietLog(
         user_id=client_user.id,

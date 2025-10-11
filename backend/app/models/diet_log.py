@@ -27,7 +27,7 @@ class DietLog(Base, TimestampMixin):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     meal_date: Mapped[Date] = mapped_column(Date, nullable=False, index=True)
-    meal_type: Mapped[MealType] = mapped_column(SQLEnum(MealType), nullable=False)
+    meal_type: Mapped[MealType] = mapped_column(SQLEnum(MealType, values_callable=lambda enum_cls: [e.value for e in enum_cls]), nullable=False)
     food_name: Mapped[str] = mapped_column(String(255), nullable=False)
     calories: Mapped[float] = mapped_column(Float, nullable=True)
     protein_grams: Mapped[float] = mapped_column(Float, nullable=True)

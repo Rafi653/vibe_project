@@ -19,9 +19,9 @@ async def seed_database():
         result = await session.execute(text("SELECT COUNT(*) FROM users"))
         count = result.scalar()
         
-        if count > 0:
-            print("Database already seeded. Skipping...")
-            return
+        # if count > 0:
+        #     print("Database already seeded. Skipping...")
+        #     return
         
         print("Seeding database with initial data...")
         

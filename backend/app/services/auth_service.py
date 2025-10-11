@@ -44,11 +44,14 @@ class AuthService:
         
         # Create new user
         hashed_password = get_password_hash(user_data.password)
+        print(user_data)
+        print(user_data.role)
+        print(user_data.role.value)
         new_user = User(
             email=user_data.email,
             hashed_password=hashed_password,
             full_name=user_data.full_name,
-            role=user_data.role,
+            role=user_data.role.value,
             is_active=True,
             is_verified=False
         )
@@ -62,7 +65,7 @@ class AuthService:
             data={
                 "sub": new_user.email,
                 "user_id": new_user.id,
-                "role": new_user.role.value
+                "role": new_user.role
             }
         )
         
@@ -86,6 +89,7 @@ class AuthService:
         Raises:
             HTTPException: If credentials are invalid
         """
+        print('Login attempt for:', login_data.email)
         # Find user by email
         result = await db.execute(select(User).where(User.email == login_data.email))
         user = result.scalar_one_or_none()

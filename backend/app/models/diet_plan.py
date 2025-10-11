@@ -22,7 +22,7 @@ class DietPlan(Base, TimestampMixin):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     start_date: Mapped[Date] = mapped_column(Date, nullable=False)
     end_date: Mapped[Date] = mapped_column(Date, nullable=True)
-    status: Mapped[PlanStatus] = mapped_column(SQLEnum(PlanStatus), default=PlanStatus.ACTIVE, nullable=False)
+    status: Mapped[PlanStatus] = mapped_column(SQLEnum(PlanStatus, values_callable=lambda enum_cls: [e.value for e in enum_cls]), default=PlanStatus.ACTIVE, nullable=False)
     
     # Nutritional targets
     target_calories: Mapped[float] = mapped_column(Float, nullable=True)

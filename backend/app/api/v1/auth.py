@@ -45,6 +45,7 @@ async def login(
     
     Returns user info and an access token for subsequent requests
     """
+    print("Login attempt for:", login_data)
     return await AuthService.login_user(db, login_data)
 
 

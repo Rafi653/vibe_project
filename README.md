@@ -86,7 +86,9 @@ Stop services:
 docker compose down
 ```
 
-For detailed Docker setup instructions, troubleshooting, and production deployment, see [DOCKER_SETUP.md](DOCKER_SETUP.md).
+For detailed Docker setup instructions, troubleshooting, and production deployment, see:
+- [DOCKER_SETUP.md](DOCKER_SETUP.md) - Complete guide
+- [DOCKER_QUICK_REFERENCE.md](DOCKER_QUICK_REFERENCE.md) - Quick command reference
 
 ### Frontend Setup
 The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.

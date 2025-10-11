@@ -348,13 +348,61 @@ docker-compose up -d
 **Solution**:
 ```bash
 # Check if PostgreSQL is healthy
-docker-compose ps
+docker compose ps
 
 # Check PostgreSQL logs
-docker-compose logs postgres
+docker compose logs postgres
 
 # Verify connection from backend
-docker-compose exec backend ping postgres
+docker compose exec backend ping postgres
+```
+
+### Frontend Can't Connect to Backend
+
+**Problem**: Frontend shows API connection errors
+
+**Solution**:
+```bash
+# Check if backend is running
+docker compose ps
+
+# Check backend logs for errors
+docker compose logs backend
+
+# Verify backend health
+curl http://localhost:8000/api/v1/health
+
+# Check if CORS is configured (should include http://localhost:3000)
+docker compose exec backend env | grep ALLOWED_ORIGINS
+```
+
+### Hot-Reload Not Working
+
+**Problem**: Changes to code don't trigger reload
+
+**Solution**:
+
+For backend:
+```bash
+# Ensure volume mount is working
+docker compose exec backend ls -la /app
+
+# Restart backend service
+docker compose restart backend
+```
+
+For frontend:
+```bash
+# Check if polling is enabled
+docker compose exec frontend env | grep CHOKIDAR
+
+# Restart frontend service
+docker compose restart frontend
+
+# On some systems, you may need to increase file watchers
+# On Linux host:
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
 ```
 
 ### Permission Issues
@@ -367,7 +415,7 @@ docker-compose exec backend ping postgres
 sudo chown -R $USER:$USER .
 
 # Or run with sudo
-sudo docker-compose up -d
+sudo docker compose up -d
 ```
 
 ### Image Build Failures
@@ -380,8 +428,63 @@ sudo docker-compose up -d
 docker system prune -a
 
 # Rebuild from scratch
-docker-compose build --no-cache
+docker compose build --no-cache
+
+# Build specific service
+docker compose build --no-cache backend
+docker compose build --no-cache frontend
 ```
+
+### Frontend Build Out of Memory
+
+**Problem**: Frontend build fails with "JavaScript heap out of memory"
+
+**Solution**:
+```bash
+# Increase Node.js memory limit in docker-compose.yml
+# Add to frontend service environment:
+# - NODE_OPTIONS=--max_old_space_size=4096
+```
+
+## Docker Image Optimization
+
+### Image Sizes
+
+Our Docker images are optimized for production:
+
+**Development:**
+- Backend: ~500MB (includes dev tools and volume mount)
+- Frontend: ~300MB (Node.js with dev server)
+
+**Production:**
+- Backend: ~200MB (multi-stage build, non-root user)
+- Frontend: ~25MB (multi-stage build with nginx Alpine)
+- PostgreSQL: ~240MB (official Alpine image)
+
+### Optimization Features
+
+**Backend:**
+- ✅ Multi-stage build separates build and runtime dependencies
+- ✅ Python 3.11-slim base image
+- ✅ Minimal system dependencies
+- ✅ Non-root user for security
+- ✅ Layer caching for requirements.txt
+
+**Frontend:**
+- ✅ Multi-stage build (build stage + nginx stage)
+- ✅ Node.js Alpine for smaller size
+- ✅ Production build optimization
+- ✅ Static assets served by nginx
+- ✅ Gzip compression enabled
+- ✅ Long-term caching for static assets
+
+### Further Optimization Tips
+
+1. **Use .dockerignore**: Exclude unnecessary files from build context
+2. **Order layers**: Put frequently changing files last
+3. **Combine RUN commands**: Reduce layer count
+4. **Use specific versions**: Pin base image versions for reproducibility
+5. **Clean up in same layer**: Remove temporary files in the same RUN command
 
 ## Useful Docker Commands
 
@@ -406,7 +509,17 @@ docker system df
 
 # Complete cleanup (use with caution!)
 docker system prune -a --volumes
+
+# Check image size
+docker images vibe_project*
+
+# Inspect image layers
+docker history <image-name>
 ```
+
+## Quick Command Reference
+
+For a quick reference of common Docker commands, see [DOCKER_QUICK_REFERENCE.md](DOCKER_QUICK_REFERENCE.md).
 
 ## Additional Resources
 
@@ -414,3 +527,4 @@ docker system prune -a --volumes
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [PostgreSQL Docker Image](https://hub.docker.com/_/postgres)
 - [Backend Database Setup Guide](backend/DATABASE_SETUP.md)
+- [Docker Quick Reference](DOCKER_QUICK_REFERENCE.md)

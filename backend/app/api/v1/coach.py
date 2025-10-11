@@ -31,12 +31,26 @@ async def get_clients(
     current_user: User = Depends(require_coach),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get list of all clients (for coaches and admins)"""
-    result = await db.execute(
-        select(User)
-        .where(User.role == UserRole.CLIENT)
-        .order_by(User.full_name)
-    )
+    """Get list of all clients connected to the coach through bookings"""
+    # For coaches, only show clients they have bookings with
+    # For admins, show all clients
+    if current_user.role == UserRole.COACH:
+        from app.models.booking import Booking
+        # Get unique client IDs from bookings
+        result = await db.execute(
+            select(User)
+            .join(Booking, User.id == Booking.client_id)
+            .where(Booking.coach_id == current_user.id)
+            .distinct()
+            .order_by(User.full_name)
+        )
+    else:
+        # Admin can see all clients
+        result = await db.execute(
+            select(User)
+            .where(User.role == UserRole.CLIENT)
+            .order_by(User.full_name)
+        )
     return result.scalars().all()
 
 
@@ -46,7 +60,8 @@ async def get_client(
     current_user: User = Depends(require_coach),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get a specific client's profile"""
+    """Get a specific client's profile (only if connected through booking)"""
+    # Verify client exists
     result = await db.execute(
         select(User).where(
             and_(User.id == client_id, User.role == UserRole.CLIENT)
@@ -60,6 +75,23 @@ async def get_client(
             detail="Client not found"
         )
     
+    # For coaches, verify they have a booking with this client
+    if current_user.role == UserRole.COACH:
+        from app.models.booking import Booking
+        booking_check = await db.execute(
+            select(Booking).where(
+                and_(
+                    Booking.coach_id == current_user.id,
+                    Booking.client_id == client_id
+                )
+            )
+        )
+        if not booking_check.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only view profiles of clients you're connected with through bookings"
+            )
+    
     return client
 
 
@@ -72,7 +104,7 @@ async def get_client_workout_logs(
     current_user: User = Depends(require_coach),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get workout logs for a specific client"""
+    """Get workout logs for a specific client (only if connected through booking)"""
     # Verify client exists
     client_result = await db.execute(
         select(User).where(
@@ -84,6 +116,23 @@ async def get_client_workout_logs(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Client not found"
         )
+    
+    # For coaches, verify they have a booking with this client
+    if current_user.role == UserRole.COACH:
+        from app.models.booking import Booking
+        booking_check = await db.execute(
+            select(Booking).where(
+                and_(
+                    Booking.coach_id == current_user.id,
+                    Booking.client_id == client_id
+                )
+            )
+        )
+        if not booking_check.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only view logs of clients you're connected with through bookings"
+            )
     
     query = select(WorkoutLog).where(WorkoutLog.user_id == client_id)
     
@@ -106,7 +155,7 @@ async def get_client_diet_logs(
     current_user: User = Depends(require_coach),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get diet logs for a specific client"""
+    """Get diet logs for a specific client (only if connected through booking)"""
     # Verify client exists
     client_result = await db.execute(
         select(User).where(
@@ -118,6 +167,23 @@ async def get_client_diet_logs(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Client not found"
         )
+    
+    # For coaches, verify they have a booking with this client
+    if current_user.role == UserRole.COACH:
+        from app.models.booking import Booking
+        booking_check = await db.execute(
+            select(Booking).where(
+                and_(
+                    Booking.coach_id == current_user.id,
+                    Booking.client_id == client_id
+                )
+            )
+        )
+        if not booking_check.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only view logs of clients you're connected with through bookings"
+            )
     
     query = select(DietLog).where(DietLog.user_id == client_id)
     
@@ -138,7 +204,7 @@ async def get_client_progress(
     current_user: User = Depends(require_coach),
     db: AsyncSession = Depends(get_db)
 ):
-    """Get progress metrics for a specific client"""
+    """Get progress metrics for a specific client (only if connected through booking)"""
     # Verify client exists
     client_result = await db.execute(
         select(User).where(
@@ -150,6 +216,23 @@ async def get_client_progress(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Client not found"
         )
+    
+    # For coaches, verify they have a booking with this client
+    if current_user.role == UserRole.COACH:
+        from app.models.booking import Booking
+        booking_check = await db.execute(
+            select(Booking).where(
+                and_(
+                    Booking.coach_id == current_user.id,
+                    Booking.client_id == client_id
+                )
+            )
+        )
+        if not booking_check.scalar_one_or_none():
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only view progress of clients you're connected with through bookings"
+            )
     
     # Get statistics
     thirty_days_ago = date.today() - timedelta(days=30)

@@ -36,6 +36,7 @@ function ClientDashboard() {
 
   useEffect(() => {
     loadDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   const loadDashboardData = async () => {

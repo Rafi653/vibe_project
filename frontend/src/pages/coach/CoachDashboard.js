@@ -34,12 +34,14 @@ function CoachDashboard() {
 
   useEffect(() => {
     loadClients();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   useEffect(() => {
     if (selectedClient) {
       loadClientProgress(selectedClient.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedClient, token]);
 
   const loadClients = async () => {

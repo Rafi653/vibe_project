@@ -1,0 +1,102 @@
+/**
+ * Admin service for API calls
+ */
+
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
+const getAuthHeaders = (token) => ({
+  'Authorization': `Bearer ${token}`,
+  'Content-Type': 'application/json',
+});
+
+// User Management
+export const getAllUsers = async (token, role = null) => {
+  let url = `${API_BASE_URL}/api/v1/admin/users`;
+  
+  if (role) {
+    url += `?role=${role}`;
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get users');
+  }
+
+  return response.json();
+};
+
+export const getUser = async (token, userId) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/users/${userId}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get user');
+  }
+
+  return response.json();
+};
+
+export const updateUser = async (token, userId, userData) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/users/${userId}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(token),
+    body: JSON.stringify(userData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to update user');
+  }
+
+  return response.json();
+};
+
+export const deleteUser = async (token, userId) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/users/${userId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to delete user');
+  }
+};
+
+// Platform Statistics
+export const getPlatformStats = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/stats`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get platform stats');
+  }
+
+  return response.json();
+};
+
+// Usage Reports
+export const generateUsageReport = async (token, days = 30) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/reports/usage?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to generate usage report');
+  }
+
+  return response.json();
+};

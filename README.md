@@ -41,7 +41,30 @@ vibe_project/
 ```
 
 ## Getting Started
-This project is in its initial setup phase. Further instructions for development setup, installation, and contribution guidelines will be added as the project evolves.
+
+### Backend Setup
+The backend is built with Python and FastAPI. To get started:
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Follow the setup instructions in [backend/README.md](backend/README.md)
+
+Quick start:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+The API will be available at http://localhost:8000 with interactive docs at http://localhost:8000/api/docs
+
+### Frontend Setup
+Coming soon...
 
 ## Team Onboarding
 Welcome to the Vibe Project! This repository is structured to separate frontend and backend concerns clearly:

@@ -13,7 +13,7 @@ class UserSignup(BaseModel):
     email: EmailStr
     password: str = Field(..., min_length=6, max_length=100)
     full_name: str = Field(..., min_length=1, max_length=255)
-    role: UserRole = Field(default=UserRole.CLIENT.value)
+    role: UserRole = Field(default=UserRole.CLIENT)
 
 
 class UserLogin(BaseModel):

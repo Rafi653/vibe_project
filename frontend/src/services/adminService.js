@@ -100,3 +100,60 @@ export const generateUsageReport = async (token, days = 30) => {
 
   return response.json();
 };
+
+// Chart Data
+export const getUserGrowthChart = async (token, days = 90) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/charts/user-growth?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get user growth chart');
+  }
+
+  return response.json();
+};
+
+export const getPlatformUsageChart = async (token, days = 30) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/charts/platform-usage?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get platform usage chart');
+  }
+
+  return response.json();
+};
+
+export const getCoachPerformanceChart = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/charts/coach-performance`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get coach performance chart');
+  }
+
+  return response.json();
+};
+
+export const getSystemHealthChart = async (token, days = 7) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/admin/charts/system-health?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get system health chart');
+  }
+
+  return response.json();
+};

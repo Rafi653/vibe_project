@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import * as adminService from '../../services/adminService';
+import LineChart from '../../components/charts/LineChart';
+import BarChart from '../../components/charts/BarChart';
 import '../client/ClientDashboard.css';
 
 function AdminDashboard() {
@@ -12,6 +14,11 @@ function AdminDashboard() {
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Chart data states
+  const [userGrowthData, setUserGrowthData] = useState(null);
+  const [platformUsageData, setPlatformUsageData] = useState(null);
+  const [systemHealthData, setSystemHealthData] = useState(null);
 
   const [userForm, setUserForm] = useState({
     full_name: '',
@@ -22,6 +29,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     loadDashboardData();
+    loadChartData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
@@ -49,6 +57,21 @@ function AdminDashboard() {
       setUsers(usersData);
     } catch (err) {
       console.error('Failed to load users:', err);
+    }
+  };
+
+  const loadChartData = async () => {
+    try {
+      const [userGrowth, platformUsage, systemHealth] = await Promise.all([
+        adminService.getUserGrowthChart(token, 90),
+        adminService.getPlatformUsageChart(token, 30),
+        adminService.getSystemHealthChart(token, 7)
+      ]);
+      setUserGrowthData(userGrowth);
+      setPlatformUsageData(platformUsage);
+      setSystemHealthData(systemHealth);
+    } catch (err) {
+      console.error('Failed to load chart data:', err);
     }
   };
 
@@ -157,6 +180,95 @@ function AdminDashboard() {
           </div>
         </div>
       )}
+
+      {/* Charts Section */}
+      <div className="charts-section">
+        <h2>Platform Analytics</h2>
+        
+        {/* User Growth Chart */}
+        {userGrowthData && userGrowthData.labels && userGrowthData.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>User Growth (Last 90 Days)</h3>
+            <LineChart
+              labels={userGrowthData.labels}
+              datasets={[
+                {
+                  label: 'New Clients',
+                  data: userGrowthData.clients,
+                  borderColor: 'rgb(97, 218, 251)',
+                  backgroundColor: 'rgba(97, 218, 251, 0.2)',
+                  fill: true,
+                },
+                {
+                  label: 'New Coaches',
+                  data: userGrowthData.coaches,
+                  borderColor: 'rgb(255, 159, 64)',
+                  backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                  fill: true,
+                },
+                {
+                  label: 'New Admins',
+                  data: userGrowthData.admins,
+                  borderColor: 'rgb(153, 102, 255)',
+                  backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                  fill: true,
+                }
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Platform Usage Chart */}
+        {platformUsageData && platformUsageData.workouts && platformUsageData.workouts.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>Platform Activity (Last 30 Days)</h3>
+            <BarChart
+              labels={platformUsageData.workouts.labels}
+              datasets={[
+                {
+                  label: 'Daily Workouts',
+                  data: platformUsageData.workouts.data,
+                  backgroundColor: 'rgba(97, 218, 251, 0.7)',
+                },
+                {
+                  label: 'Daily Diet Logs',
+                  data: platformUsageData.diet_logs.data,
+                  backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                }
+              ]}
+            />
+          </div>
+        )}
+
+        {/* System Health Chart */}
+        {systemHealthData && systemHealthData.daily_active_users && systemHealthData.daily_active_users.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>System Health (Last 7 Days)</h3>
+            <div className="stats-grid" style={{ marginBottom: '1.5rem' }}>
+              <div className="stat-card">
+                <h3>{systemHealthData.total_users}</h3>
+                <p>Total Users</p>
+              </div>
+              <div className="stat-card">
+                <h3>{systemHealthData.active_rate.toFixed(1)}%</h3>
+                <p>Active Rate</p>
+              </div>
+            </div>
+            <LineChart
+              labels={systemHealthData.daily_active_users.labels}
+              datasets={[
+                {
+                  label: 'Daily Active Users',
+                  data: systemHealthData.daily_active_users.data,
+                  borderColor: 'rgb(75, 192, 192)',
+                  backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                  fill: true,
+                }
+              ]}
+            />
+          </div>
+        )}
+      </div>
 
       {/* User Management */}
       <div className="recent-logs">

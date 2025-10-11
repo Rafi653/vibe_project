@@ -198,3 +198,49 @@ export const updateProfile = async (token, profileData) => {
 
   return response.json();
 };
+
+// Chart Data
+export const getWorkoutFrequencyChart = async (token, days = 30) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/client/charts/workout-frequency?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get workout frequency chart');
+  }
+
+  return response.json();
+};
+
+export const getDietAdherenceChart = async (token, days = 30) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/client/charts/diet-adherence?days=${days}`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get diet adherence chart');
+  }
+
+  return response.json();
+};
+
+export const getWorkoutVolumeChart = async (token, days = 90, exercise = null) => {
+  let url = `${API_BASE_URL}/api/v1/client/charts/workout-volume?days=${days}`;
+  if (exercise) url += `&exercise=${encodeURIComponent(exercise)}`;
+  
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get workout volume chart');
+  }
+
+  return response.json();
+};

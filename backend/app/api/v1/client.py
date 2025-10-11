@@ -399,6 +399,159 @@ async def get_progress(
     }
 
 
+@router.get("/charts/workout-frequency")
+async def get_workout_frequency_chart(
+    days: int = 30,
+    current_user: User = Depends(require_client),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get workout frequency data for charts (workouts per day over time)"""
+    start_date = date.today() - timedelta(days=days)
+    
+    # Get workout counts grouped by date
+    result = await db.execute(
+        select(
+            WorkoutLog.workout_date,
+            func.count(WorkoutLog.id).label('count')
+        )
+        .where(
+            and_(
+                WorkoutLog.user_id == current_user.id,
+                WorkoutLog.workout_date >= start_date
+            )
+        )
+        .group_by(WorkoutLog.workout_date)
+        .order_by(WorkoutLog.workout_date)
+    )
+    
+    data = result.all()
+    return {
+        "labels": [row.workout_date.isoformat() for row in data],
+        "data": [row.count for row in data]
+    }
+
+
+@router.get("/charts/diet-adherence")
+async def get_diet_adherence_chart(
+    days: int = 30,
+    current_user: User = Depends(require_client),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get diet adherence data for charts (calories and macros over time)"""
+    start_date = date.today() - timedelta(days=days)
+    
+    # Get daily nutrition totals
+    result = await db.execute(
+        select(
+            DietLog.meal_date,
+            func.sum(DietLog.calories).label('total_calories'),
+            func.sum(DietLog.protein_grams).label('total_protein'),
+            func.sum(DietLog.carbs_grams).label('total_carbs'),
+            func.sum(DietLog.fat_grams).label('total_fat')
+        )
+        .where(
+            and_(
+                DietLog.user_id == current_user.id,
+                DietLog.meal_date >= start_date
+            )
+        )
+        .group_by(DietLog.meal_date)
+        .order_by(DietLog.meal_date)
+    )
+    
+    data = result.all()
+    
+    # Get target from active diet plan
+    target_result = await db.execute(
+        select(DietPlan)
+        .where(
+            and_(
+                DietPlan.user_id == current_user.id,
+                DietPlan.status == "active"
+            )
+        )
+        .order_by(DietPlan.start_date.desc())
+        .limit(1)
+    )
+    active_plan = target_result.scalar_one_or_none()
+    
+    return {
+        "labels": [row.meal_date.isoformat() for row in data],
+        "calories": [float(row.total_calories or 0) for row in data],
+        "protein": [float(row.total_protein or 0) for row in data],
+        "carbs": [float(row.total_carbs or 0) for row in data],
+        "fat": [float(row.total_fat or 0) for row in data],
+        "targets": {
+            "calories": float(active_plan.target_calories) if active_plan else None,
+            "protein": float(active_plan.target_protein_grams) if active_plan else None,
+            "carbs": float(active_plan.target_carbs_grams) if active_plan else None,
+            "fat": float(active_plan.target_fat_grams) if active_plan else None
+        }
+    }
+
+
+@router.get("/charts/workout-volume")
+async def get_workout_volume_chart(
+    days: int = 90,
+    exercise: Optional[str] = None,
+    current_user: User = Depends(require_client),
+    db: AsyncSession = Depends(get_db)
+):
+    """Get workout volume trends (weight progression over time)"""
+    start_date = date.today() - timedelta(days=days)
+    
+    # Base query
+    query = select(
+        WorkoutLog.workout_date,
+        WorkoutLog.exercise_name,
+        func.avg(WorkoutLog.weight).label('avg_weight'),
+        func.max(WorkoutLog.weight).label('max_weight')
+    ).where(
+        and_(
+            WorkoutLog.user_id == current_user.id,
+            WorkoutLog.workout_date >= start_date,
+            WorkoutLog.weight.isnot(None)
+        )
+    )
+    
+    # Filter by exercise if specified
+    if exercise:
+        query = query.where(WorkoutLog.exercise_name == exercise)
+    
+    query = query.group_by(WorkoutLog.workout_date, WorkoutLog.exercise_name).order_by(WorkoutLog.workout_date)
+    
+    result = await db.execute(query)
+    data = result.all()
+    
+    # Get unique exercises
+    exercises_result = await db.execute(
+        select(WorkoutLog.exercise_name)
+        .where(
+            and_(
+                WorkoutLog.user_id == current_user.id,
+                WorkoutLog.workout_date >= start_date,
+                WorkoutLog.weight.isnot(None)
+            )
+        )
+        .distinct()
+    )
+    exercises = [row[0] for row in exercises_result.all()]
+    
+    # Group data by exercise
+    exercise_data = {}
+    for row in data:
+        if row.exercise_name not in exercise_data:
+            exercise_data[row.exercise_name] = {"dates": [], "avg_weights": [], "max_weights": []}
+        exercise_data[row.exercise_name]["dates"].append(row.workout_date.isoformat())
+        exercise_data[row.exercise_name]["avg_weights"].append(float(row.avg_weight or 0))
+        exercise_data[row.exercise_name]["max_weights"].append(float(row.max_weight or 0))
+    
+    return {
+        "exercises": exercises,
+        "data": exercise_data
+    }
+
+
 # Profile management
 @router.put("/profile", response_model=UserResponse)
 async def update_profile(

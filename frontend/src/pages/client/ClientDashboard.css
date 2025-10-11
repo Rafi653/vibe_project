@@ -205,3 +205,71 @@
   border-radius: 4px;
   margin-bottom: 1rem;
 }
+
+/* Charts Section */
+.charts-section {
+  margin: 3rem 0;
+}
+
+.charts-section h2 {
+  color: #282c34;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.chart-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.chart-card h3 {
+  color: #282c34;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.exercise-selector {
+  max-width: 300px;
+}
+
+.export-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.export-button:hover {
+  background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-card {
+    padding: 1rem;
+  }
+
+  .charts-section h2 {
+    font-size: 1.5rem;
+  }
+}

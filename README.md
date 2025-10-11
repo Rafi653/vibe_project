@@ -8,15 +8,26 @@ Vibe Project is a comprehensive fitness coaching application designed to connect
 - **Progress Tracking**: Provide comprehensive tools for tracking workouts, nutrition, and fitness metrics
 - **Community Engagement**: Build a supportive community where users can share their fitness journey
 - **Accessibility**: Make professional fitness coaching accessible to users of all fitness levels
-- **Data-Driven Insights**: Leverage analytics to help users and coaches make informed decisions
+- **Data-Driven Insights**: Leverage analytics to help users and coaches make informed decisions ✅
+
+## Key Features
+
+### 📊 Charts and Dashboards (NEW!)
+Interactive charts and analytics for tracking progress and engagement:
+- **Client Dashboard**: Workout frequency, diet adherence, macros tracking, strength progress
+- **Coach Dashboard**: Client activity overview, engagement trends, plan assignments
+- **Admin Dashboard**: User growth, platform usage, system health indicators
+
+See [CHARTS_QUICK_START.md](CHARTS_QUICK_START.md) and [CHARTS_DOCUMENTATION.md](CHARTS_DOCUMENTATION.md) for details.
 
 ## Architecture & Tech Stack
 
 ### Frontend
 - **Framework**: React.js 19.2.0 ✅
 - **Routing**: React Router DOM 7.9.4 ✅
+- **Charts**: Chart.js 4.x with react-chartjs-2 ✅
 - **Styling**: CSS (TailwindCSS or Material-UI for future enhancement)
-- **State Management**: Redux or Context API (to be implemented)
+- **State Management**: Context API ✅
 - **Mobile**: React Native (future consideration)
 
 ### Backend
@@ -54,8 +65,11 @@ docker-compose up -d
 # Run database migrations
 docker-compose exec backend alembic upgrade head
 
-# Seed the database (optional)
+# Seed the database with test data (optional)
 docker-compose exec backend python -m app.db.seed
+
+# Seed with comprehensive chart data (recommended for charts feature)
+docker-compose exec backend python -m app.db.seed_charts
 ```
 
 Access the application:

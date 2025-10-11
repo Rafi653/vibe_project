@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import * as clientService from '../../services/clientService';
+import LineChart from '../../components/charts/LineChart';
+import BarChart from '../../components/charts/BarChart';
 import './ClientDashboard.css';
 
 function ClientDashboard() {
@@ -12,6 +14,12 @@ function ClientDashboard() {
   const [showDietForm, setShowDietForm] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Chart data states
+  const [workoutFrequencyData, setWorkoutFrequencyData] = useState(null);
+  const [dietAdherenceData, setDietAdherenceData] = useState(null);
+  const [workoutVolumeData, setWorkoutVolumeData] = useState(null);
+  const [selectedExercise, setSelectedExercise] = useState('');
 
   const [workoutForm, setWorkoutForm] = useState({
     workout_date: new Date().toISOString().split('T')[0],
@@ -36,6 +44,7 @@ function ClientDashboard() {
 
   useEffect(() => {
     loadDashboardData();
+    loadChartData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
@@ -55,6 +64,26 @@ function ClientDashboard() {
       setError(err.message || 'Failed to load dashboard data');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadChartData = async () => {
+    try {
+      const [workoutFreq, dietAdh, workoutVol] = await Promise.all([
+        clientService.getWorkoutFrequencyChart(token, 30),
+        clientService.getDietAdherenceChart(token, 30),
+        clientService.getWorkoutVolumeChart(token, 90)
+      ]);
+      setWorkoutFrequencyData(workoutFreq);
+      setDietAdherenceData(dietAdh);
+      setWorkoutVolumeData(workoutVol);
+      
+      // Set default exercise if available
+      if (workoutVol.exercises && workoutVol.exercises.length > 0) {
+        setSelectedExercise(workoutVol.exercises[0]);
+      }
+    } catch (err) {
+      console.error('Failed to load chart data:', err);
     }
   };
 
@@ -308,6 +337,120 @@ function ClientDashboard() {
           </form>
         </div>
       )}
+
+      {/* Charts Section */}
+      <div className="charts-section">
+        <h2>Progress Analytics</h2>
+        
+        {/* Workout Frequency Chart */}
+        {workoutFrequencyData && workoutFrequencyData.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>Workout Frequency (Last 30 Days)</h3>
+            <LineChart
+              labels={workoutFrequencyData.labels}
+              datasets={[
+                {
+                  label: 'Workouts per Day',
+                  data: workoutFrequencyData.data,
+                  borderColor: 'rgb(97, 218, 251)',
+                  backgroundColor: 'rgba(97, 218, 251, 0.2)',
+                  fill: true,
+                }
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Diet Adherence Chart */}
+        {dietAdherenceData && dietAdherenceData.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>Diet Adherence (Last 30 Days)</h3>
+            <LineChart
+              labels={dietAdherenceData.labels}
+              datasets={[
+                {
+                  label: 'Daily Calories',
+                  data: dietAdherenceData.calories,
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                },
+                ...(dietAdherenceData.targets.calories ? [{
+                  label: 'Target Calories',
+                  data: Array(dietAdherenceData.labels.length).fill(dietAdherenceData.targets.calories),
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                  borderDash: [5, 5],
+                }] : [])
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Macros Breakdown Chart */}
+        {dietAdherenceData && dietAdherenceData.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>Macronutrient Tracking (Last 30 Days)</h3>
+            <BarChart
+              labels={dietAdherenceData.labels}
+              datasets={[
+                {
+                  label: 'Protein (g)',
+                  data: dietAdherenceData.protein,
+                  backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                },
+                {
+                  label: 'Carbs (g)',
+                  data: dietAdherenceData.carbs,
+                  backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                },
+                {
+                  label: 'Fat (g)',
+                  data: dietAdherenceData.fat,
+                  backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                }
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Workout Volume/Progress Chart */}
+        {workoutVolumeData && workoutVolumeData.exercises && workoutVolumeData.exercises.length > 0 && (
+          <div className="chart-card">
+            <h3>Strength Progress (Last 90 Days)</h3>
+            <div className="form-group" style={{ marginBottom: '1rem' }}>
+              <label>Select Exercise:</label>
+              <select 
+                value={selectedExercise} 
+                onChange={(e) => setSelectedExercise(e.target.value)}
+                className="exercise-selector"
+              >
+                {workoutVolumeData.exercises.map(ex => (
+                  <option key={ex} value={ex}>{ex}</option>
+                ))}
+              </select>
+            </div>
+            {selectedExercise && workoutVolumeData.data[selectedExercise] && (
+              <LineChart
+                labels={workoutVolumeData.data[selectedExercise].dates}
+                datasets={[
+                  {
+                    label: 'Average Weight (kg)',
+                    data: workoutVolumeData.data[selectedExercise].avg_weights,
+                    borderColor: 'rgb(153, 102, 255)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                  },
+                  {
+                    label: 'Max Weight (kg)',
+                    data: workoutVolumeData.data[selectedExercise].max_weights,
+                    borderColor: 'rgb(255, 159, 64)',
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                  }
+                ]}
+              />
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Recent Workouts */}
       {workoutLogs.length > 0 && (

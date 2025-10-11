@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import * as coachService from '../../services/coachService';
+import BarChart from '../../components/charts/BarChart';
+import LineChart from '../../components/charts/LineChart';
+import DoughnutChart from '../../components/charts/DoughnutChart';
 import '../client/ClientDashboard.css';
 
 function CoachDashboard() {
@@ -12,6 +15,11 @@ function CoachDashboard() {
   const [planType, setPlanType] = useState('workout'); // 'workout' or 'diet'
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  // Chart data states
+  const [clientOverviewData, setClientOverviewData] = useState(null);
+  const [engagementData, setEngagementData] = useState(null);
+  const [planAssignmentsData, setPlanAssignmentsData] = useState(null);
 
   const [workoutPlanForm, setWorkoutPlanForm] = useState({
     user_id: '',
@@ -34,6 +42,7 @@ function CoachDashboard() {
 
   useEffect(() => {
     loadClients();
+    loadChartData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
@@ -63,6 +72,21 @@ function CoachDashboard() {
       setClientProgress(data);
     } catch (err) {
       console.error('Failed to load client progress:', err);
+    }
+  };
+
+  const loadChartData = async () => {
+    try {
+      const [overview, engagement, assignments] = await Promise.all([
+        coachService.getClientOverviewChart(token),
+        coachService.getEngagementChart(token, 30),
+        coachService.getPlanAssignmentsChart(token)
+      ]);
+      setClientOverviewData(overview);
+      setEngagementData(engagement);
+      setPlanAssignmentsData(assignments);
+    } catch (err) {
+      console.error('Failed to load chart data:', err);
     }
   };
 
@@ -297,6 +321,86 @@ function CoachDashboard() {
           </form>
         </div>
       )}
+
+      {/* Charts Section */}
+      <div className="charts-section">
+        <h2>Client Analytics</h2>
+        
+        {/* Client Overview Chart */}
+        {clientOverviewData && clientOverviewData.clients && clientOverviewData.clients.length > 0 && (
+          <div className="chart-card">
+            <h3>Client Activity Overview (Last 30 Days)</h3>
+            <BarChart
+              labels={clientOverviewData.clients.map(c => c.client_name)}
+              datasets={[
+                {
+                  label: 'Workouts',
+                  data: clientOverviewData.clients.map(c => c.workouts),
+                  backgroundColor: 'rgba(97, 218, 251, 0.7)',
+                },
+                {
+                  label: 'Diet Logs',
+                  data: clientOverviewData.clients.map(c => c.diet_logs),
+                  backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                },
+                {
+                  label: 'Active Plans',
+                  data: clientOverviewData.clients.map(c => c.active_plans),
+                  backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                }
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Client Engagement Chart */}
+        {engagementData && engagementData.workouts && engagementData.workouts.labels.length > 0 && (
+          <div className="chart-card">
+            <h3>Client Engagement Trends (Last 30 Days)</h3>
+            <LineChart
+              labels={engagementData.workouts.labels}
+              datasets={[
+                {
+                  label: 'Daily Workouts',
+                  data: engagementData.workouts.data,
+                  borderColor: 'rgb(97, 218, 251)',
+                  backgroundColor: 'rgba(97, 218, 251, 0.2)',
+                  fill: true,
+                },
+                {
+                  label: 'Daily Diet Logs',
+                  data: engagementData.diet_logs.data,
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                  fill: true,
+                }
+              ]}
+            />
+          </div>
+        )}
+
+        {/* Plan Assignments Chart */}
+        {planAssignmentsData && (
+          <div className="chart-card">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+              <div>
+                <h3>Workout Plans Status</h3>
+                <DoughnutChart
+                  labels={Object.keys(planAssignmentsData.workout_plans)}
+                  data={Object.values(planAssignmentsData.workout_plans)}
+                />
+              </div>
+              <div>
+                <h3>Diet Plans Status</h3>
+                <DoughnutChart
+                  labels={Object.keys(planAssignmentsData.diet_plans)}
+                  data={Object.values(planAssignmentsData.diet_plans)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Clients List */}
       <div className="recent-logs">

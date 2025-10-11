@@ -136,19 +136,19 @@ function CoachDashboard() {
   return (
     <div className="page-container">
       <div className="dashboard-header">
-        <h1>Coach Dashboard</h1>
-        <p>Manage your clients and training programs</p>
+        <h1>Coach Dashboard 🏋️</h1>
+        <p>Manage your clients and training programs 💪</p>
       </div>
 
       {error && <div className="error-message">{error}</div>}
 
       {/* Client Summary */}
       <div className="progress-summary">
-        <h2>Your Clients</h2>
+        <h2>👥 Your Clients</h2>
         <div className="stats-grid">
           <div className="stat-card">
             <h3>{clients.length}</h3>
-            <p>Total Clients</p>
+            <p>💪 Total Clients</p>
           </div>
         </div>
       </div>
@@ -162,7 +162,7 @@ function CoachDashboard() {
           }} 
           className="primary-button"
         >
-          {showPlanForm && planType === 'workout' ? 'Cancel' : 'Create Workout Plan'}
+          {showPlanForm && planType === 'workout' ? '❌ Cancel' : '🏋️ Create Workout Plan'}
         </button>
         <button 
           onClick={() => {
@@ -171,14 +171,14 @@ function CoachDashboard() {
           }} 
           className="primary-button"
         >
-          {showPlanForm && planType === 'diet' ? 'Cancel' : 'Create Diet Plan'}
+          {showPlanForm && planType === 'diet' ? '❌ Cancel' : '🥗 Create Diet Plan'}
         </button>
       </div>
 
       {/* Plan Forms */}
       {showPlanForm && planType === 'workout' && (
         <div className="form-card">
-          <h3>Create Workout Plan</h3>
+          <h3>🏋️ Create Workout Plan</h3>
           <form onSubmit={handleWorkoutPlanSubmit}>
             <div className="form-group">
               <label>Client</label>

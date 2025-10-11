@@ -1,9 +1,11 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './FeatureDetails.css';
 
 function FeatureDetails() {
   const { featureId } = useParams();
+  const { isAuthenticated } = useAuth();
 
   const features = {
     'personalized-coaching': {
@@ -210,14 +212,16 @@ function FeatureDetails() {
             </ol>
           </section>
 
-          <section className="feature-cta">
-            <h2>Ready to Get Started?</h2>
-            <p>Join Vibe Fitness today and start achieving your goals with {feature.title.toLowerCase()}.</p>
-            <div className="cta-buttons">
-              <Link to="/signup" className="cta-button primary">Sign Up Now</Link>
-              <Link to="/login" className="cta-button secondary">Sign In</Link>
-            </div>
-          </section>
+          {!isAuthenticated && (
+            <section className="feature-cta">
+              <h2>Ready to Get Started?</h2>
+              <p>Join Vibe Fitness today and start achieving your goals with {feature.title.toLowerCase()}.</p>
+              <div className="cta-buttons">
+                <Link to="/signup" className="cta-button primary">Sign Up Now</Link>
+                <Link to="/login" className="cta-button secondary">Sign In</Link>
+              </div>
+            </section>
+          )}
         </div>
       </div>
     </div>

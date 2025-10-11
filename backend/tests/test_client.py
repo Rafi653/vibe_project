@@ -191,3 +191,50 @@ async def test_update_profile(client_token, test_db):
     assert response.status_code == 200
     data = response.json()
     assert data["full_name"] == "Updated Name"
+
+
+@pytest.mark.asyncio
+async def test_get_profile(client_token, test_db):
+    """Test getting user profile"""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get(
+            "/api/v1/client/profile",
+            headers={"Authorization": f"Bearer {client_token}"}
+        )
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "testclient@example.com"
+    assert data["full_name"] == "Test Client"
+
+
+@pytest.mark.asyncio
+async def test_update_client_profile_with_demographics(client_token, test_db):
+    """Test updating client profile with demographics"""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.put(
+            "/api/v1/client/profile",
+            headers={"Authorization": f"Bearer {client_token}"},
+            json={
+                "height": 180.5,
+                "weight": 80.0,
+                "age": 30,
+                "gender": "male",
+                "bicep_size": 38.0,
+                "waist": 85.0,
+                "target_goals": "Build muscle and lose fat",
+                "dietary_restrictions": "Gluten-free",
+                "gym_access": "Full gym with weights",
+                "supplements": "Protein powder, creatine"
+            }
+        )
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert data["height"] == 180.5
+    assert data["weight"] == 80.0
+    assert data["age"] == 30
+    assert data["gender"] == "male"
+    assert data["target_goals"] == "Build muscle and lose fat"

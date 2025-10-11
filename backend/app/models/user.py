@@ -2,8 +2,9 @@
 User model
 """
 
-from sqlalchemy import String, Boolean, Enum as SQLEnum
+from sqlalchemy import String, Boolean, Enum as SQLEnum, Integer, Float, Text, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional, Dict, Any
 import enum
 
 from app.db.base import Base
@@ -29,6 +30,34 @@ class User(Base, TimestampMixin):
     role: Mapped[UserRole] = mapped_column(SQLEnum(UserRole, values_callable=lambda enum_cls: [e.value for e in enum_cls]), default=UserRole.CLIENT, nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    
+    # Common profile fields
+    age: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    gender: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    
+    # Client-specific profile fields
+    height: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    weight: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    bicep_size: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    waist: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    target_goals: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    dietary_restrictions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    health_complications: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    injuries: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    gym_access: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    supplements: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    referral_source: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    
+    # Coach-specific profile fields
+    track_record: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    experience: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    certifications: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    competitions: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    qualifications: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    specialties: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    # Custom fields for extensibility
+    custom_fields: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
     
     # Relationships
     workout_logs: Mapped[list["WorkoutLog"]] = relationship(

@@ -68,39 +68,48 @@ function Home() {
           Your journey to a healthier, stronger you starts here ✨
         </p>
         <div className="features">
-          <div className="feature-card">
-            <div className="feature-icon">🏋️</div>
-            <h3>Personalized Coaching</h3>
-            <p>Connect with certified fitness coaches and receive tailored workout plans designed specifically for your goals and fitness level.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">📊</div>
-            <h3>Progress Tracking</h3>
-            <p>Comprehensive tools for tracking workouts, nutrition, and fitness metrics to help you see your improvements over time.</p>
-          </div>
-          <div className="feature-card">
-            <div className="feature-icon">👥</div>
-            <h3>Community Engagement</h3>
-            <p>Build a supportive community where you can share your fitness journey, celebrate victories, and stay motivated together.</p>
-          </div>
+          <Link to="/features/personalized-coaching" className="feature-card-link">
+            <div className="feature-card">
+              <div className="feature-icon">🏋️</div>
+              <h3>Personalized Coaching</h3>
+              <p>Connect with certified fitness coaches and receive tailored workout plans designed specifically for your goals and fitness level.</p>
+              <span className="learn-more">Learn More →</span>
+            </div>
+          </Link>
+          <Link to="/features/progress-tracking" className="feature-card-link">
+            <div className="feature-card">
+              <div className="feature-icon">📊</div>
+              <h3>Progress Tracking</h3>
+              <p>Comprehensive tools for tracking workouts, nutrition, and fitness metrics to help you see your improvements over time.</p>
+              <span className="learn-more">Learn More →</span>
+            </div>
+          </Link>
+          <Link to="/features/community-engagement" className="feature-card-link">
+            <div className="feature-card">
+              <div className="feature-icon">👥</div>
+              <h3>Community Engagement</h3>
+              <p>Build a supportive community where you can share your fitness journey, celebrate victories, and stay motivated together.</p>
+              <span className="learn-more">Learn More →</span>
+            </div>
+          </Link>
         </div>
         <div className="additional-features">
-          <div className="mini-feature">
+          <Link to="/features/nutrition-plans" className="mini-feature">
             <span className="mini-icon">🍎</span>
             <span>Nutrition Plans</span>
-          </div>
-          <div className="mini-feature">
+          </Link>
+          <Link to="/features/strength-training" className="mini-feature">
             <span className="mini-icon">💪</span>
             <span>Strength Training</span>
-          </div>
-          <div className="mini-feature">
+          </Link>
+          <Link to="/features/fat-burn" className="mini-feature">
             <span className="mini-icon">🔥</span>
             <span>Fat Burn Programs</span>
-          </div>
-          <div className="mini-feature">
+          </Link>
+          <Link to="/features/goal-setting" className="mini-feature">
             <span className="mini-icon">🎯</span>
             <span>Goal Setting</span>
-          </div>
+          </Link>
         </div>
 
         {/* Testimonials Section */}

@@ -47,6 +47,12 @@
   margin-top: 3rem;
 }
 
+.feature-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .feature-card {
   background: rgba(255, 255, 255, 0.95);
   padding: 2.5rem;
@@ -55,11 +61,25 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
 }
 
 .feature-card:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+}
+
+.learn-more {
+  display: block;
+  margin-top: 1rem;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover .learn-more {
+  transform: translateX(5px);
 }
 
 .feature-icon {
@@ -112,6 +132,8 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
   transition: all 0.3s ease;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .mini-feature:hover {

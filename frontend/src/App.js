@@ -7,6 +7,7 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import FeedbackBox from './components/FeedbackBox';
 import Home from './pages/common/Home';
+import FeatureDetails from './pages/common/FeatureDetails';
 import ClientDashboard from './pages/client/ClientDashboard';
 import CoachDashboard from './pages/coach/CoachDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -22,6 +23,7 @@ function App() {
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/features/:featureId" element={<FeatureDetails />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               

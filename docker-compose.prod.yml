@@ -1,28 +1,25 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: vibe_postgres
+    container_name: vibe_postgres_prod
     environment:
-      POSTGRES_USER: vibe_user
-      POSTGRES_PASSWORD: vibe_password
-      POSTGRES_DB: vibe_db
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-vibe_db}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U vibe_user -d vibe_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-vibe_db}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
     networks:
       - vibe_network
 
   redis:
     image: redis:7-alpine
-    container_name: vibe_redis
-    ports:
-      - "6379:6379"
+    container_name: vibe_redis_prod
     volumes:
       - redis_data:/data
     healthcheck:
@@ -30,6 +27,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: unless-stopped
     networks:
       - vibe_network
 
@@ -37,17 +35,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: vibe_backend
+    container_name: vibe_backend_prod
     environment:
-      - DATABASE_URL=postgresql+asyncpg://vibe_user:vibe_password@postgres:5432/vibe_db
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-vibe_db}
       - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
-      - ENVIRONMENT=${ENVIRONMENT:-development}
-      - DEBUG=${DEBUG:-true}
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=production
+      - DEBUG=false
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
     depends_on:
       postgres:
         condition: service_healthy
@@ -59,28 +55,26 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    restart: unless-stopped
     networks:
       - vibe_network
 
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
-    container_name: vibe_frontend
-    environment:
-      - REACT_APP_API_URL=http://localhost:8000
-      - WATCHPACK_POLLING=true
-      - CHOKIDAR_USEPOLLING=true
+      dockerfile: Dockerfile
+    container_name: vibe_frontend_prod
     ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "80:80"
     depends_on:
       - backend
-    stdin_open: true
-    tty: true
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
     networks:
       - vibe_network
 

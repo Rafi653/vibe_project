@@ -48,22 +48,23 @@ vibe_project/
 The easiest way to get started is using Docker:
 
 ```bash
-# Start all services (PostgreSQL + Backend)
-docker-compose up -d
+# Start all services (PostgreSQL + Redis + Backend + Frontend)
+docker compose up -d
 
 # Run database migrations
-docker-compose exec backend alembic upgrade head
+docker compose exec backend alembic upgrade head
 
 # Seed the database (optional)
-docker-compose exec backend python -m app.db.seed
+docker compose exec backend python -m app.db.seed
 ```
 
 Access the application:
+- **Frontend**: http://localhost:3000
 - **API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/api/docs
 - **Health Check**: http://localhost:8000/api/v1/health
 
-For detailed Docker setup instructions, see [DOCKER_SETUP.md](DOCKER_SETUP.md).
+For detailed Docker setup instructions, see [DOCKER_SETUP.md](DOCKER_SETUP.md) or [QUICK_START.md](QUICK_START.md).
 
 ### Frontend Setup
 The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.

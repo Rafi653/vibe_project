@@ -92,6 +92,17 @@ For detailed Docker setup instructions, troubleshooting, and production deployme
 - [DOCKER_SETUP.md](DOCKER_SETUP.md) - Complete guide
 - [DOCKER_QUICK_REFERENCE.md](DOCKER_QUICK_REFERENCE.md) - Quick command reference
 
+### 🌐 Share Your App with ngrok
+
+Want to share your local app with friends or testers? Use ngrok to expose your app to the internet!
+
+```bash
+# Quick start
+./scripts/start-ngrok.sh
+```
+
+See [NGROK_SETUP.md](NGROK_SETUP.md) for complete setup instructions, security considerations, and troubleshooting.
+
 ### Frontend Setup
 The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.
 
@@ -187,6 +198,8 @@ Comprehensive documentation is available for developers:
 - **[AUTHENTICATION.md](AUTHENTICATION.md)** - Authentication system details
 - **[DOCKER_SETUP.md](DOCKER_SETUP.md)** - Docker deployment guide
 - **[CHARTS_DOCUMENTATION.md](CHARTS_DOCUMENTATION.md)** - Charts and dashboards guide
+- **[NGROK_SETUP.md](NGROK_SETUP.md)** - Share your app publicly with ngrok
+- **[NGROK_QUICK_REFERENCE.md](NGROK_QUICK_REFERENCE.md)** - Quick ngrok commands
 
 ### API Documentation
 

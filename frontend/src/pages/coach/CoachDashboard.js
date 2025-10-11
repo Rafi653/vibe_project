@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import * as coachService from '../../services/coachService';
 import BarChart from '../../components/charts/BarChart';
@@ -136,8 +137,13 @@ function CoachDashboard() {
   return (
     <div className="page-container">
       <div className="dashboard-header">
-        <h1>Coach Dashboard 🏋️</h1>
-        <p>Manage your clients and training programs 💪</p>
+        <div>
+          <h1>Coach Dashboard 🏋️</h1>
+          <p>Manage your clients and training programs 💪</p>
+        </div>
+        <Link to="/coach/profile" className="primary-button">
+          👨‍🏫 My Profile
+        </Link>
       </div>
 
       {error && <div className="error-message">{error}</div>}

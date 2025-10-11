@@ -184,6 +184,20 @@ export const getProgress = async (token) => {
 };
 
 // Profile
+export const getProfile = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/client/profile`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get profile');
+  }
+
+  return response.json();
+};
+
 export const updateProfile = async (token, profileData) => {
   const response = await fetch(`${API_BASE_URL}/api/v1/client/profile`, {
     method: 'PUT',

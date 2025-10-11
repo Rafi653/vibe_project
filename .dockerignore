@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+!README.md
+
+# CI/CD
+.github
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Dependencies
+node_modules
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Build artifacts
+build
+dist
+*.egg-info
+.cache
+coverage
+htmlcov
+
+# Test files
+.pytest_cache
+.coverage
+
+# Temporary files
+tmp/
+temp/

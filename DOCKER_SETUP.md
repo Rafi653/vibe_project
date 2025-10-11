@@ -19,18 +19,20 @@ cd vibe_project
 ### 2. Start All Services
 
 ```bash
-# Start PostgreSQL and backend services
-docker-compose up -d
+# Start PostgreSQL, backend, and frontend services
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 ```
 
 This command will:
 - Pull the PostgreSQL 16 Alpine image
 - Build the backend application image
-- Start both containers
+- Build the frontend application image
+- Start all containers
 - Create a persistent volume for PostgreSQL data
+- Make the frontend available at http://localhost:3000
 - Make the backend available at http://localhost:8000
 - Make PostgreSQL available at localhost:5432
 
@@ -46,6 +48,7 @@ docker-compose exec backend python -m app.db.seed
 
 ### 4. Access the Application
 
+- **Frontend**: http://localhost:3000
 - **API**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/api/docs
 - **Health Check**: http://localhost:8000/api/v1/health
@@ -54,10 +57,10 @@ docker-compose exec backend python -m app.db.seed
 
 ```bash
 # Stop all services
-docker-compose down
+docker compose down
 
 # Stop and remove volumes (deletes all data)
-docker-compose down -v
+docker compose down -v
 ```
 
 ## Service Details
@@ -79,6 +82,16 @@ docker-compose down -v
 - **Port**: 8000 (mapped to host)
 - **Dependencies**: PostgreSQL (waits for health check)
 - **Auto-reload**: Enabled in development mode
+- **Health Check**: Checks `/api/v1/health` endpoint every 30s
+
+### Frontend Service
+
+- **Container Name**: `vibe_frontend`
+- **Build Context**: `./frontend`
+- **Port**: 3000 (mapped to host)
+- **Dependencies**: Backend service
+- **Auto-reload**: Enabled in development mode (hot module replacement)
+- **Volume**: `./frontend:/app` (for hot-reload)
 
 ## Common Operations
 
@@ -86,28 +99,32 @@ docker-compose down -v
 
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f backend
-docker-compose logs -f postgres
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f postgres
 ```
 
 ### Access Container Shell
 
 ```bash
 # Backend container
-docker-compose exec backend bash
+docker compose exec backend bash
+
+# Frontend container
+docker compose exec frontend sh
 
 # PostgreSQL container
-docker-compose exec postgres bash
+docker compose exec postgres bash
 ```
 
 ### Connect to PostgreSQL
 
 ```bash
 # Using psql in the container
-docker-compose exec postgres psql -U vibe_user -d vibe_db
+docker compose exec postgres psql -U vibe_user -d vibe_db
 
 # Common psql commands:
 # \dt              - List all tables
@@ -119,45 +136,52 @@ docker-compose exec postgres psql -U vibe_user -d vibe_db
 
 ```bash
 # Rebuild after code changes
-docker-compose build
+docker compose build
 
 # Rebuild without cache
-docker-compose build --no-cache
+docker compose build --no-cache
 
 # Restart with new build
-docker-compose up -d --build
+docker compose up -d --build
+
+# Rebuild specific service
+docker compose build backend
+docker compose build frontend
 ```
 
 ### Database Operations
 
 ```bash
 # Run migrations
-docker-compose exec backend alembic upgrade head
+docker compose exec backend alembic upgrade head
 
 # Create a new migration
-docker-compose exec backend alembic revision --autogenerate -m "description"
+docker compose exec backend alembic revision --autogenerate -m "description"
 
 # View migration history
-docker-compose exec backend alembic history
+docker compose exec backend alembic history
 
 # Rollback one migration
-docker-compose exec backend alembic downgrade -1
+docker compose exec backend alembic downgrade -1
 
 # Seed database
-docker-compose exec backend python -m app.db.seed
+docker compose exec backend python -m app.db.seed
 ```
 
 ### Running Tests
 
 ```bash
-# Run all tests
-docker-compose exec backend pytest
+# Backend tests
+docker compose exec backend pytest
 
 # Run with verbose output
-docker-compose exec backend pytest -v
+docker compose exec backend pytest -v
 
 # Run specific test file
-docker-compose exec backend pytest tests/test_health.py
+docker compose exec backend pytest tests/test_health.py
+
+# Frontend tests
+docker compose exec frontend npm test
 ```
 
 ## Environment Variables
@@ -180,61 +204,112 @@ The `docker-compose.yml` will automatically pick up these variables.
 ### 1. Start Services
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 2. Make Code Changes
 
-The backend service has a volume mount (`./backend:/app`), so changes to Python files will automatically reload the application.
+Both frontend and backend have volume mounts for hot-reload:
+- **Backend** (`./backend:/app`): Python files automatically reload
+- **Frontend** (`./frontend:/app`): React Hot Module Replacement (HMR) enabled
 
 ### 3. View Logs
 
 ```bash
-docker-compose logs -f backend
+# Backend logs
+docker compose logs -f backend
+
+# Frontend logs
+docker compose logs -f frontend
+
+# All logs
+docker compose logs -f
 ```
 
 ### 4. Run Tests
 
 ```bash
-docker-compose exec backend pytest
+# Backend tests
+docker compose exec backend pytest
+
+# Frontend tests
+docker compose exec frontend npm test
 ```
 
 ### 5. Database Migrations
 
 After modifying models:
 ```bash
-docker-compose exec backend alembic revision --autogenerate -m "your changes"
-docker-compose exec backend alembic upgrade head
+docker compose exec backend alembic revision --autogenerate -m "your changes"
+docker compose exec backend alembic upgrade head
 ```
 
-## Production Considerations
+## Production Deployment
 
-For production deployment, consider:
+### Using Production Docker Compose
 
-1. **Use Production Dockerfile**
-   - Remove volume mounts
-   - Disable debug mode
-   - Use production WSGI server settings
+For production deployment, use the production compose file:
 
-2. **Environment Variables**
-   - Use strong SECRET_KEY
-   - Set ENVIRONMENT=production
-   - Use secure database passwords
+```bash
+# Create .env file with production settings
+cp .env.example .env
+nano .env  # Edit with your production values
 
-3. **Database**
-   - Use managed PostgreSQL service (AWS RDS, Google Cloud SQL)
-   - Enable SSL connections
-   - Regular backups
+# Required environment variables for production:
+# - SECRET_KEY (must be set to a strong random value)
+# - POSTGRES_PASSWORD (must be set)
+# - ALLOWED_ORIGINS (your production domain)
 
-4. **Security**
-   - Don't expose PostgreSQL port publicly
-   - Use Docker secrets for sensitive data
-   - Enable Docker security features
+# Start production services
+docker compose -f docker-compose.prod.yml up -d
 
-5. **Monitoring**
-   - Add health checks
-   - Configure logging
-   - Set up monitoring tools
+# Run migrations
+docker compose -f docker-compose.prod.yml exec backend alembic upgrade head
+```
+
+### Production Features
+
+The production setup includes:
+- **Multi-stage builds** for smaller image sizes
+- **Non-root user** for backend security
+- **Nginx** for serving frontend with gzip compression
+- **Health checks** for all services
+- **Automatic restarts** on failure
+- **Optimized caching** for static assets
+- **Security headers** in nginx
+
+### Production Checklist
+
+1. **Environment Variables**
+   - ✅ Use strong SECRET_KEY (generate with `openssl rand -hex 32`)
+   - ✅ Set ENVIRONMENT=production
+   - ✅ Disable DEBUG mode
+   - ✅ Use secure database passwords
+   - ✅ Configure ALLOWED_ORIGINS with your domain
+
+2. **Database**
+   - ✅ Use managed PostgreSQL service (AWS RDS, Google Cloud SQL) or ensure proper backups
+   - ✅ Enable SSL connections
+   - ✅ Regular automated backups
+   - ✅ Don't expose PostgreSQL port publicly (remove port mapping)
+
+3. **Security**
+   - ✅ Use Docker secrets for sensitive data
+   - ✅ Enable Docker security features
+   - ✅ Keep images updated
+   - ✅ Scan for vulnerabilities regularly
+
+4. **Monitoring**
+   - ✅ Health checks are configured
+   - ✅ Configure centralized logging
+   - ✅ Set up monitoring tools (Prometheus, Grafana)
+   - ✅ Set up alerts for service failures
+
+5. **Performance**
+   - ✅ Backend runs with 4 workers (adjust based on CPU cores)
+   - ✅ Frontend served by Nginx with compression
+   - ✅ Static assets cached for 1 year
+   - ✅ Database connection pooling configured
 
 ## Troubleshooting
 

@@ -17,6 +17,14 @@ pythonpath = ["."]
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
+[tool.coverage.run]
+omit = [
+    "app/db/seed.py",
+    "app/db/seed_charts.py",
+    "*/tests/*",
+    "*/__pycache__/*"
+]
+
 [tool.black]
 line-length = 100
 target-version = ['py311']

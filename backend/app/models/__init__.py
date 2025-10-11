@@ -7,6 +7,7 @@ from app.models.workout_log import WorkoutLog
 from app.models.diet_log import DietLog, MealType
 from app.models.workout_plan import WorkoutPlan, PlanStatus
 from app.models.diet_plan import DietPlan
+from app.models.feedback import Feedback
 
 __all__ = [
     "User",
@@ -17,4 +18,5 @@ __all__ = [
     "WorkoutPlan",
     "DietPlan",
     "PlanStatus",
+    "Feedback",
 ]

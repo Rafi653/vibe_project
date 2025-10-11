@@ -53,7 +53,7 @@ function Navigation() {
           ) : (
             <li>
               <button onClick={handleLogout} className="logout-button">
-                Logout ({user?.email})
+                Logout ({user?.full_name})
               </button>
             </li>
           )}

@@ -2,7 +2,7 @@
  * Authentication service for API calls
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { apiFetch, getApiUrl } from './apiClient';
 
 /**
  * Sign up a new user
@@ -10,7 +10,7 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
  * @returns {Promise<Object>} User data with token
  */
 export const signup = async (userData) => {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/signup`, {
+  const response = await apiFetch(getApiUrl('/api/v1/auth/signup'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export const signup = async (userData) => {
  * @returns {Promise<Object>} User data with token
  */
 export const login = async (credentials) => {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+  const response = await apiFetch(getApiUrl('/api/v1/auth/login'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const login = async (credentials) => {
  * @returns {Promise<Object>} Current user data
  */
 export const getCurrentUser = async (token) => {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+  const response = await apiFetch(getApiUrl('/api/v1/auth/me'), {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -76,7 +76,7 @@ export const getCurrentUser = async (token) => {
  * @returns {Promise<Object>} Logout response
  */
 export const logout = async (token) => {
-  const response = await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
+  const response = await apiFetch(getApiUrl('/api/v1/auth/logout'), {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,

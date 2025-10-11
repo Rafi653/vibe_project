@@ -66,7 +66,25 @@ The frontend is built with React.js and includes role-based navigation for clien
 For more details, see the [Frontend README](frontend/README.md).
 
 ### Backend Setup
-Backend setup instructions will be added as the backend is developed.
+The backend is built with Python and FastAPI. To get started:
+
+1. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+2. Follow the setup instructions in [backend/README.md](backend/README.md)
+
+Quick start:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+The API will be available at http://localhost:8000 with interactive docs at http://localhost:8000/api/docs
 
 ## Team Onboarding
 Welcome to the Vibe Project! This repository is structured to separate frontend and backend concerns clearly:

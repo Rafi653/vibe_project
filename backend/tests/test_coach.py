@@ -258,3 +258,47 @@ async def test_get_client_diet_logs(coach_token, client_user, test_db):
     assert response.status_code == 200
     data = response.json()
     assert len(data) >= 1
+
+
+@pytest.mark.asyncio
+async def test_get_coach_profile(coach_token, test_db):
+    """Test getting coach profile"""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.get(
+            "/api/v1/coach/profile",
+            headers={"Authorization": f"Bearer {coach_token}"}
+        )
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert data["email"] == "testcoach@example.com"
+    assert data["full_name"] == "Test Coach"
+
+
+@pytest.mark.asyncio
+async def test_update_coach_profile(coach_token, test_db):
+    """Test updating coach profile with professional information"""
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        response = await ac.put(
+            "/api/v1/coach/profile",
+            headers={"Authorization": f"Bearer {coach_token}"},
+            json={
+                "age": 35,
+                "gender": "male",
+                "track_record": "Trained 100+ clients",
+                "experience": "10 years of professional coaching",
+                "certifications": "NSCA-CSCS, ACE-CPT",
+                "competitions": "Won regional bodybuilding championship",
+                "qualifications": "BS in Exercise Science",
+                "specialties": "Strength training, nutrition coaching"
+            }
+        )
+    
+    assert response.status_code == 200
+    data = response.json()
+    assert data["age"] == 35
+    assert data["experience"] == "10 years of professional coaching"
+    assert data["certifications"] == "NSCA-CSCS, ACE-CPT"
+    assert data["specialties"] == "Strength training, nutrition coaching"

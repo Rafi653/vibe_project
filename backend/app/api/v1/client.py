@@ -553,6 +553,14 @@ async def get_workout_volume_chart(
 
 
 # Profile management
+@router.get("/profile", response_model=UserResponse)
+async def get_profile(
+    current_user: User = Depends(require_client),
+):
+    """Get user's own profile"""
+    return UserResponse.model_validate(current_user)
+
+
 @router.put("/profile", response_model=UserResponse)
 async def update_profile(
     profile_data: UserProfileUpdate,

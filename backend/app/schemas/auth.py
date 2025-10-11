@@ -43,6 +43,30 @@ class UserResponse(BaseModel):
     role: UserRole
     is_active: bool
     is_verified: bool
+    # Common profile fields
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    # Client-specific fields
+    height: Optional[float] = None
+    weight: Optional[float] = None
+    bicep_size: Optional[float] = None
+    waist: Optional[float] = None
+    target_goals: Optional[str] = None
+    dietary_restrictions: Optional[str] = None
+    health_complications: Optional[str] = None
+    injuries: Optional[str] = None
+    gym_access: Optional[str] = None
+    supplements: Optional[str] = None
+    referral_source: Optional[str] = None
+    # Coach-specific fields
+    track_record: Optional[str] = None
+    experience: Optional[str] = None
+    certifications: Optional[str] = None
+    competitions: Optional[str] = None
+    qualifications: Optional[str] = None
+    specialties: Optional[str] = None
+    # Custom fields
+    custom_fields: Optional[dict] = None
     
     model_config = {
         "from_attributes": True

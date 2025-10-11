@@ -20,6 +20,7 @@ from app.schemas.diet_log import DietLogResponse
 from app.schemas.workout_plan import WorkoutPlanCreate, WorkoutPlanUpdate, WorkoutPlanResponse
 from app.schemas.diet_plan import DietPlanCreate, DietPlanUpdate, DietPlanResponse
 from app.schemas.auth import UserResponse
+from app.schemas.user import CoachProfileUpdate
 
 router = APIRouter()
 
@@ -519,3 +520,29 @@ async def get_plan_assignments_chart(
         "workout_plans": workout_plans,
         "diet_plans": diet_plans
     }
+
+
+# Profile management
+@router.get("/profile", response_model=UserResponse)
+async def get_profile(
+    current_user: User = Depends(require_coach),
+):
+    """Get coach's own profile"""
+    return UserResponse.model_validate(current_user)
+
+
+@router.put("/profile", response_model=UserResponse)
+async def update_profile(
+    profile_data: CoachProfileUpdate,
+    current_user: User = Depends(require_coach),
+    db: AsyncSession = Depends(get_db)
+):
+    """Update coach's own profile"""
+    update_data = profile_data.model_dump(exclude_unset=True)
+    
+    for field, value in update_data.items():
+        setattr(current_user, field, value)
+    
+    await db.commit()
+    await db.refresh(current_user)
+    return UserResponse.model_validate(current_user)

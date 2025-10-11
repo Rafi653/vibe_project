@@ -265,3 +265,33 @@ export const getPlanAssignmentsChart = async (token) => {
 
   return response.json();
 };
+
+// Profile
+export const getProfile = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/coach/profile`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get profile');
+  }
+
+  return response.json();
+};
+
+export const updateProfile = async (token, profileData) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/coach/profile`, {
+    method: 'PUT',
+    headers: getAuthHeaders(token),
+    body: JSON.stringify(profileData),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to update profile');
+  }
+
+  return response.json();
+};

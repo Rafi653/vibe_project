@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import * as clientService from '../../services/clientService';
 import LineChart from '../../components/charts/LineChart';
@@ -135,8 +136,13 @@ function ClientDashboard() {
   return (
     <div className="page-container">
       <div className="dashboard-header">
-        <h1>Client Dashboard 💪</h1>
-        <p>Welcome to your personal fitness portal 🎯</p>
+        <div>
+          <h1>Client Dashboard 💪</h1>
+          <p>Welcome to your personal fitness portal 🎯</p>
+        </div>
+        <Link to="/client/profile" className="primary-button">
+          👤 My Profile
+        </Link>
       </div>
 
       {error && <div className="error-message">{error}</div>}

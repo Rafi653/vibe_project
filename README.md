@@ -43,6 +43,28 @@ vibe_project/
 
 ## Getting Started
 
+### Quick Start with Docker (Recommended)
+
+The easiest way to get started is using Docker:
+
+```bash
+# Start all services (PostgreSQL + Backend)
+docker-compose up -d
+
+# Run database migrations
+docker-compose exec backend alembic upgrade head
+
+# Seed the database (optional)
+docker-compose exec backend python -m app.db.seed
+```
+
+Access the application:
+- **API**: http://localhost:8000
+- **API Docs**: http://localhost:8000/api/docs
+- **Health Check**: http://localhost:8000/api/v1/health
+
+For detailed Docker setup instructions, see [DOCKER_SETUP.md](DOCKER_SETUP.md).
+
 ### Frontend Setup
 The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.
 
@@ -65,7 +87,7 @@ The frontend is built with React.js and includes role-based navigation for clien
 
 For more details, see the [Frontend README](frontend/README.md).
 
-### Backend Setup
+### Backend Setup (Without Docker)
 The backend is built with Python and FastAPI. To get started:
 
 1. Navigate to the backend directory:
@@ -81,6 +103,11 @@ cd backend
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
+
+# Set up database (see backend/DATABASE_SETUP.md)
+alembic upgrade head
+
+# Run the application
 uvicorn app.main:app --reload
 ```
 

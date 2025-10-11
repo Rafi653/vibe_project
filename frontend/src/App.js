@@ -5,6 +5,7 @@ import Navigation from './components/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
 import Signup from './components/Signup';
+import FeedbackBox from './components/FeedbackBox';
 import Home from './pages/common/Home';
 import ClientDashboard from './pages/client/ClientDashboard';
 import CoachDashboard from './pages/coach/CoachDashboard';
@@ -17,6 +18,7 @@ function App() {
       <AuthProvider>
         <div className="App">
           <Navigation />
+          <FeedbackBox />
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />

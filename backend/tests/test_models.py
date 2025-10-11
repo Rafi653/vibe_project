@@ -237,3 +237,52 @@ async def test_user_relationships(test_db):
     
     assert queried_user.id == user.id
     assert queried_user.email == "relationships@example.com"
+
+
+@pytest.mark.asyncio
+async def test_model_repr_methods(test_db):
+    """Test model __repr__ methods"""
+    # Test User repr
+    user = User(
+        email="repr@example.com",
+        hashed_password="hashed",
+        full_name="Repr User",
+        role=UserRole.CLIENT,
+        is_active=True
+    )
+    test_db.add(user)
+    await test_db.commit()
+    await test_db.refresh(user)
+    
+    user_repr = repr(user)
+    assert "User" in user_repr
+    assert "repr@example.com" in user_repr
+    
+    # Test WorkoutLog repr
+    workout = WorkoutLog(
+        user_id=user.id,
+        workout_date=date.today(),
+        exercise_name="Test Exercise",
+        sets=3,
+        reps=10
+    )
+    test_db.add(workout)
+    await test_db.commit()
+    await test_db.refresh(workout)
+    
+    workout_repr = repr(workout)
+    assert "WorkoutLog" in workout_repr
+    
+    # Test WorkoutPlan repr
+    plan = WorkoutPlan(
+        user_id=user.id,
+        name="Test Plan",
+        start_date=date.today(),
+        end_date=date.today() + timedelta(days=7)
+    )
+    test_db.add(plan)
+    await test_db.commit()
+    await test_db.refresh(plan)
+    
+    plan_repr = repr(plan)
+    assert "WorkoutPlan" in plan_repr

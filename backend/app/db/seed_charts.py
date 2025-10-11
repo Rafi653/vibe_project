@@ -61,7 +61,7 @@ async def seed_charts_data():
         
         # Create multiple users
         admin_user = User(
-            email="admin@vibe.com",
+            email="admin2@vibe.com",
             hashed_password=get_password_hash("admin123"),
             full_name="Admin User",
             role=UserRole.ADMIN,
@@ -286,7 +286,7 @@ async def seed_charts_data():
         print("Database seeded successfully with comprehensive data!")
         print("="*60)
         print("\nSample credentials:")
-        print("  Admin: admin@vibe.com / admin123")
+        print("  Admin: admin2@vibe.com / admin123")
         print("  Coaches: coach1@vibe.com / coach1123, coach2@vibe.com / coach2123, coach3@vibe.com / coach3123")
         print("  Clients: client1@vibe.com / client1123 through client10@vibe.com / client10123")
         print("\nData Summary:")

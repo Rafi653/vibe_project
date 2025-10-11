@@ -54,30 +54,41 @@ vibe_project/
 
 ## Getting Started
 
-### Quick Start with Docker (Recommended)
+### Quick Start with Docker (Recommended) 🐳
 
-The easiest way to get started is using Docker:
+The easiest way to get started is using Docker. All services (PostgreSQL, Backend, Frontend) are containerized:
 
 ```bash
-# Start all services (PostgreSQL + Backend)
-docker-compose up -d
+# Start all services (PostgreSQL + Backend + Frontend)
+docker compose up -d
+
+# View logs
+docker compose logs -f
 
 # Run database migrations
-docker-compose exec backend alembic upgrade head
+docker compose exec backend alembic upgrade head
 
 # Seed the database with test data (optional)
-docker-compose exec backend python -m app.db.seed
+docker compose exec backend python -m app.db.seed
 
 # Seed with comprehensive chart data (recommended for charts feature)
-docker-compose exec backend python -m app.db.seed_charts
+docker compose exec backend python -m app.db.seed_charts
 ```
 
 Access the application:
+- **Frontend**: http://localhost:3000
 - **API**: http://localhost:8000
 - **API Docs**: http://localhost:8000/api/docs
 - **Health Check**: http://localhost:8000/api/v1/health
 
-For detailed Docker setup instructions, see [DOCKER_SETUP.md](DOCKER_SETUP.md).
+Stop services:
+```bash
+docker compose down
+```
+
+For detailed Docker setup instructions, troubleshooting, and production deployment, see:
+- [DOCKER_SETUP.md](DOCKER_SETUP.md) - Complete guide
+- [DOCKER_QUICK_REFERENCE.md](DOCKER_QUICK_REFERENCE.md) - Quick command reference
 
 ### Frontend Setup
 The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.

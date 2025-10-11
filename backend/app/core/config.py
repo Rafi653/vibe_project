@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost:5432/vibe_db"
+    DATABASE_URL: str = "postgresql+asyncpg://vibe_user:vibe_password@localhost:5432/vibe_db"
 
     # Security
     SECRET_KEY: str = "your-secret-key-change-in-production"
@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     # CORS
-    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:5173"]
+    ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"]
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"

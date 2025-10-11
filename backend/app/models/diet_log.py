@@ -5,6 +5,7 @@ DietLog model
 from sqlalchemy import String, Integer, Float, Text, ForeignKey, Date, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import enum
+from typing import Optional
 
 from app.db.base import Base
 from app.models.base import TimestampMixin
@@ -32,7 +33,7 @@ class DietLog(Base, TimestampMixin):
     protein_grams: Mapped[float] = mapped_column(Float, nullable=True)
     carbs_grams: Mapped[float] = mapped_column(Float, nullable=True)
     fat_grams: Mapped[float] = mapped_column(Float, nullable=True)
-    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="diet_logs")

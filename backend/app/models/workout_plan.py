@@ -4,6 +4,7 @@ WorkoutPlan model
 
 from sqlalchemy import String, Integer, Text, ForeignKey, Date, Enum as SQLEnum, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional
 import enum
 
 from app.db.base import Base
@@ -26,14 +27,14 @@ class WorkoutPlan(Base, TimestampMixin):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     start_date: Mapped[Date] = mapped_column(Date, nullable=False)
     end_date: Mapped[Date] = mapped_column(Date, nullable=True)
     status: Mapped[PlanStatus] = mapped_column(SQLEnum(PlanStatus), default=PlanStatus.ACTIVE, nullable=False)
     duration_weeks: Mapped[int] = mapped_column(Integer, nullable=True)
     
     # Store workout details as JSON (can be structured later with separate tables)
-    workout_details: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    workout_details: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="workout_plans")

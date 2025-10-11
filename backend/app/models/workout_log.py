@@ -4,6 +4,7 @@ WorkoutLog model
 
 from sqlalchemy import String, Integer, Float, Text, ForeignKey, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import Optional
 
 from app.db.base import Base
 from app.models.base import TimestampMixin
@@ -22,7 +23,7 @@ class WorkoutLog(Base, TimestampMixin):
     reps: Mapped[int] = mapped_column(Integer, nullable=True)
     weight: Mapped[float] = mapped_column(Float, nullable=True)  # in kg or lbs
     duration_minutes: Mapped[int] = mapped_column(Integer, nullable=True)
-    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     # Relationships
     user: Mapped["User"] = relationship("User", back_populates="workout_logs")

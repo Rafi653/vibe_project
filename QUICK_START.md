@@ -5,7 +5,7 @@ Get the Vibe Fitness Platform up and running in minutes!
 ## 🚀 Fastest Way (Docker)
 
 ```bash
-# 1. Start services
+# 1. Start all services (PostgreSQL, Redis, Backend, Frontend)
 docker compose up -d
 
 # 2. Run database migrations
@@ -15,9 +15,17 @@ docker compose exec backend alembic upgrade head
 docker compose exec backend python -m app.db.seed
 
 # 4. Open your browser
+# Frontend: http://localhost:3000
 # API: http://localhost:8000
-# Docs: http://localhost:8000/api/docs
+# API Docs: http://localhost:8000/api/docs
 ```
+
+**Services Available:**
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/api/docs
+- **PostgreSQL**: localhost:5432
+- **Redis**: localhost:6379
 
 **Sample Login Credentials:**
 - Admin: `admin@vibe.com` / `admin123`
@@ -29,8 +37,16 @@ docker compose exec backend python -m app.db.seed
 ## 📋 Prerequisites
 
 ### For Docker Setup (Recommended)
-- Docker Desktop installed
+- Docker Desktop installed (includes Docker and Docker Compose)
 - That's it! 🎉
+
+**What you get with Docker:**
+- ✅ PostgreSQL database (with persistent storage)
+- ✅ Redis cache (for sessions and caching)
+- ✅ Backend API (with hot-reload)
+- ✅ Frontend app (with hot-reload)
+- ✅ Automatic service networking
+- ✅ Health checks for all services
 
 ### For Local Setup
 - Python 3.11+
@@ -41,24 +57,38 @@ docker compose exec backend python -m app.db.seed
 
 ## 🐳 Docker Setup (Recommended)
 
-### Start
+### Start All Services
 ```bash
+# Start all services (PostgreSQL, Redis, Backend, Frontend)
 docker compose up -d
 ```
 
-### Stop
+### Stop Services
 ```bash
+# Stop all services
 docker compose down
+
+# Stop and remove all data
+docker compose down -v
 ```
 
 ### View Logs
 ```bash
+# All services
 docker compose logs -f
+
+# Specific service
+docker compose logs -f backend
+docker compose logs -f frontend
 ```
 
-### Access Database
+### Access Databases
 ```bash
+# PostgreSQL
 docker compose exec postgres psql -U vibe_user -d vibe_db
+
+# Redis
+docker compose exec redis redis-cli
 ```
 
 ---
@@ -157,8 +187,10 @@ pytest
 docker compose ps
 
 # Should show:
-# vibe_postgres - healthy
-# vibe_backend  - running
+# vibe_postgres  - healthy
+# vibe_redis     - healthy
+# vibe_backend   - healthy
+# vibe_frontend  - running
 ```
 
 ### Test API

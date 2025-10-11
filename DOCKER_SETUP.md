@@ -588,7 +588,11 @@ docker system prune -a --volumes
 
 ## Additional Resources
 
+- **[DOCKER_COMMANDS.md](DOCKER_COMMANDS.md)** - Comprehensive Docker commands reference
+- **[QUICK_START.md](QUICK_START.md)** - Quick start guide for getting up and running
+- **[backend/DATABASE_SETUP.md](backend/DATABASE_SETUP.md)** - Database setup and operations
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [PostgreSQL Docker Image](https://hub.docker.com/_/postgres)
-- [Backend Database Setup Guide](backend/DATABASE_SETUP.md)
+- [Redis Docker Image](https://hub.docker.com/_/redis)
+- [nginx Docker Image](https://hub.docker.com/_/nginx)

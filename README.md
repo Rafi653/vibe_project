@@ -64,7 +64,10 @@ Access the application:
 - **API Docs**: http://localhost:8000/api/docs
 - **Health Check**: http://localhost:8000/api/v1/health
 
-For detailed Docker setup instructions, see [DOCKER_SETUP.md](DOCKER_SETUP.md) or [QUICK_START.md](QUICK_START.md).
+**Docker Documentation:**
+- **[QUICK_START.md](QUICK_START.md)** - Get started in 5 minutes
+- **[DOCKER_SETUP.md](DOCKER_SETUP.md)** - Comprehensive Docker guide
+- **[DOCKER_COMMANDS.md](DOCKER_COMMANDS.md)** - Docker commands reference
 
 ### Frontend Setup
 The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.

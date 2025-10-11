@@ -250,7 +250,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 ### JWT Tokens
 - Tokens are signed using HS256 algorithm
-- Default expiration: 30 minutes (configurable)
+- Default expiration: 1 hour (configurable)
 - Tokens include user ID, email, and role in payload
 - Tokens are validated on every protected request
 
@@ -273,7 +273,7 @@ Edit `backend/.env`:
 # Security
 SECRET_KEY=your-secret-key-change-in-production
 ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+ACCESS_TOKEN_EXPIRE_MINUTES=60
 
 # CORS
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173

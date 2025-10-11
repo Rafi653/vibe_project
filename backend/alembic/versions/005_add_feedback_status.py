@@ -19,6 +19,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
+    op.execute("CREATE TYPE feedbackstatus AS ENUM ('open', 'actively_looking', 'resolved', 'cannot_work_on')")
     # Add status column with default value 'open'
     op.add_column('feedback', 
         sa.Column('status', 

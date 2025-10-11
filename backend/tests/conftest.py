@@ -10,7 +10,7 @@ from app.main import app
 from app.db.base import Base, get_db
 
 # Import all models to ensure they're registered with Base
-from app.models import User, WorkoutLog, DietLog, WorkoutPlan, DietPlan, Booking
+from app.models import User, WorkoutLog, DietLog, WorkoutPlan, DietPlan, Booking, Feedback
 
 # Test database URL with StaticPool for proper in-memory SQLite sharing
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"

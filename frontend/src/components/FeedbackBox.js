@@ -116,7 +116,7 @@ function FeedbackBox() {
                   />
                 </div>
 
-                {!isAuthenticated && !formData.is_anonymous && (
+                {!isAuthenticated && (
                   <>
                     <div className="form-group">
                       <label htmlFor="name">Name (Optional)</label>
@@ -160,20 +160,6 @@ function FeedbackBox() {
                         Submitting as {user?.full_name} ({user?.email})
                       </p>
                     )}
-                  </div>
-                )}
-
-                {!isAuthenticated && (
-                  <div className="form-group checkbox-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={formData.is_anonymous}
-                        onChange={(e) => setFormData({ ...formData, is_anonymous: e.target.checked })}
-                        disabled={isSubmitting}
-                      />
-                      <span>Submit anonymously</span>
-                    </label>
                   </div>
                 )}
 

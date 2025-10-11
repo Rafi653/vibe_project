@@ -157,3 +157,33 @@ export const getSystemHealthChart = async (token, days = 7) => {
 
   return response.json();
 };
+
+// Feedback Management
+export const getAllFeedback = async (token) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/feedback/`, {
+    method: 'GET',
+    headers: getAuthHeaders(token),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to get feedback');
+  }
+
+  return response.json();
+};
+
+export const updateFeedbackStatus = async (token, feedbackId, status) => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/feedback/${feedbackId}`, {
+    method: 'PUT',
+    headers: getAuthHeaders(token),
+    body: JSON.stringify({ status }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || 'Failed to update feedback status');
+  }
+
+  return response.json();
+};

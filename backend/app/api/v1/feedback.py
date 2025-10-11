@@ -12,7 +12,7 @@ from app.core.dependencies import get_current_user, require_admin
 from app.core.security import decode_access_token
 from app.models.user import User
 from app.models.feedback import Feedback
-from app.schemas.feedback import FeedbackCreate, FeedbackResponse
+from app.schemas.feedback import FeedbackCreate, FeedbackResponse, FeedbackStatusUpdate
 
 router = APIRouter()
 
@@ -105,3 +105,30 @@ async def get_all_feedback(
     )
     feedback_list = result.scalars().all()
     return feedback_list
+
+
+@router.put("/{feedback_id}", response_model=FeedbackResponse)
+async def update_feedback_status(
+    feedback_id: int,
+    status_update: FeedbackStatusUpdate,
+    current_user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update feedback status (Admin only)
+    
+    Allows admins to update the status of a feedback entry
+    """
+    result = await db.execute(
+        select(Feedback).where(Feedback.id == feedback_id)
+    )
+    feedback = result.scalar_one_or_none()
+    
+    if not feedback:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Feedback not found")
+    
+    feedback.status = status_update.status
+    await db.commit()
+    await db.refresh(feedback)
+    return feedback

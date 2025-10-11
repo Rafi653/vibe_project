@@ -13,9 +13,10 @@ Vibe Project is a comprehensive fitness coaching application designed to connect
 ## Architecture & Tech Stack
 
 ### Frontend
-- **Framework**: React.js / Next.js (to be decided)
-- **Styling**: TailwindCSS or Material-UI
-- **State Management**: Redux or Context API
+- **Framework**: React.js 19.2.0 ✅
+- **Routing**: React Router DOM 7.9.4 ✅
+- **Styling**: CSS (TailwindCSS or Material-UI for future enhancement)
+- **State Management**: Redux or Context API (to be implemented)
 - **Mobile**: React Native (future consideration)
 
 ### Backend
@@ -41,7 +42,31 @@ vibe_project/
 ```
 
 ## Getting Started
-This project is in its initial setup phase. Further instructions for development setup, installation, and contribution guidelines will be added as the project evolves.
+
+### Frontend Setup
+The frontend is built with React.js and includes role-based navigation for clients, coaches, and administrators.
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm start
+   ```
+
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+For more details, see the [Frontend README](frontend/README.md).
+
+### Backend Setup
+Backend setup instructions will be added as the backend is developed.
 
 ## Team Onboarding
 Welcome to the Vibe Project! This repository is structured to separate frontend and backend concerns clearly:

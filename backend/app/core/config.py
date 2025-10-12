@@ -32,8 +32,8 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://localhost:3001", "http://localhost:5173"]
     
     # Add ngrok URLs dynamically if provided via environment variables
-    NGROK_FRONTEND_URL: str = "https://chestiest-coaxially-heather.ngrok-free.dev"
-    NGROK_BACKEND_URL: str = "https://chestiest-coaxially-heather.ngrok-free.dev"
+    NGROK_FRONTEND_URL: str = "https://mia-chrome-africa-ram.trycloudflare.com"
+    NGROK_BACKEND_URL: str = "https://mission-afford-messages-heavy.trycloudflare.com"
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"

@@ -39,6 +39,9 @@ function Navigation() {
                   <Link to="/admin">Admin Portal</Link>
                 </li>
               )}
+              <li>
+                <Link to="/chat">Chat</Link>
+              </li>
             </>
           )}
           {!isAuthenticated ? (

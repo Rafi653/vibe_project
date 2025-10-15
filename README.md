@@ -12,7 +12,17 @@ Vibe Project is a comprehensive fitness coaching application designed to connect
 
 ## Key Features
 
-### 📊 Charts and Dashboards (NEW!)
+### 💬 WhatsApp-Style Chat (NEW!)
+Real-time messaging for seamless communication:
+- **Direct Messaging**: Private 1:1 conversations between users
+- **Group Chat**: Create and participate in group conversations
+- **Online Presence**: See who's currently active
+- **Real-Time Updates**: Instant message delivery via WebSocket
+- **Floating UI**: Non-intrusive chat interface accessible from anywhere
+
+See [CHAT_FEATURE.md](CHAT_FEATURE.md) for complete documentation.
+
+### 📊 Charts and Dashboards
 Interactive charts and analytics for tracking progress and engagement:
 - **Client Dashboard**: Workout frequency, diet adherence, macros tracking, strength progress
 - **Coach Dashboard**: Client activity overview, engagement trends, plan assignments
@@ -41,7 +51,7 @@ See [CHARTS_QUICK_START.md](CHARTS_QUICK_START.md) and [CHARTS_DOCUMENTATION.md]
 
 ### Additional Services
 - **File Storage**: AWS S3 or similar for media files
-- **Real-time Features**: WebSockets for live updates
+- **Real-time Features**: WebSockets for live updates ✅ (Chat)
 - **Email Service**: SendGrid or AWS SES
 - **Analytics**: Google Analytics, Mixpanel
 
@@ -67,7 +77,7 @@ docker compose up -d
 # View logs
 docker compose logs -f
 
-# Run database migrations
+# Run database migrations (includes chat tables)
 docker compose exec backend alembic upgrade head
 
 # Seed the database with test data (optional)
@@ -75,6 +85,8 @@ docker compose exec backend python -m app.db.seed
 
 # Seed with comprehensive chart data (recommended for charts feature)
 docker compose exec backend python -m app.db.seed_charts
+
+# Note: Chat feature requires WebSocket support - already configured!
 ```
 
 Access the application:

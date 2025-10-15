@@ -32,6 +32,7 @@ function ChatBox() {
         }
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAuthenticated, isOpen]);
 
   // Load conversations when opened
@@ -136,9 +137,8 @@ function ChatBox() {
     if (conversation.type === 'group') {
       return conversation.name || 'Group Chat';
     }
-    // For direct messages, show the other participant's name
-    const otherParticipant = conversation.participant_ids.find(id => id !== user.id);
-    // We'd need to fetch user details, for now just show "Direct Message"
+    // For direct messages, show "Direct Message"
+    // In a full implementation, we'd fetch and show the other participant's name
     return 'Direct Message';
   };
 

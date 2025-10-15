@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
 import Signup from './components/Signup';
 import FeedbackBox from './components/FeedbackBox';
+import ChatBox from './components/ChatBox';
 import Home from './pages/common/Home';
 import FeatureDetails from './pages/common/FeatureDetails';
 import ClientDashboard from './pages/client/ClientDashboard';
@@ -22,6 +23,7 @@ function App() {
         <div className="App">
           <Navigation />
           <FeedbackBox />
+          <ChatBox />
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />

@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: vibe_frontend
     environment:
-      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_API_URL=https://janet-uploaded-inches-primarily.trycloudflare.com
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     ports:

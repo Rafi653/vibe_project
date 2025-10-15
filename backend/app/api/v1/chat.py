@@ -143,8 +143,8 @@ async def get_conversations(
         
         conversation_item = ConversationListItem(
             **conversation.__dict__,
-            participants=[ConversationParticipantResponse(**p.__dict__, user=UserInfo(**p.user.__dict__)) for p in conversation.participants],
-            last_message=MessageResponse(**last_message.__dict__, sender=UserInfo(**last_message.sender.__dict__)) if last_message else None,
+            participants=[ConversationParticipantResponse(**p.__dict__) for p in conversation.participants],
+            last_message=MessageResponse(**last_message.__dict__) if last_message else None,
             unread_count=unread_count
         )
         conversation_list.append(conversation_item)
@@ -230,8 +230,8 @@ async def get_conversation(
     
     return ConversationWithMessages(
         **conversation.__dict__,
-        participants=[ConversationParticipantResponse(**p.__dict__, user=UserInfo(**p.user.__dict__)) for p in conversation.participants],
-        messages=[MessageResponse(**m.__dict__, sender=UserInfo(**m.sender.__dict__)) for m in reversed(messages)],
+        # participants=[ConversationParticipantResponse(**p.__dict__) for p in conversation.participants],
+        messages=[MessageResponse(**m.__dict__) for m in reversed(messages)],
         unread_count=unread_count
     )
 
@@ -298,7 +298,7 @@ async def create_message(
     }
     await manager.send_to_conversation(message_data, conversation_id, exclude_user_id=current_user.id)
     
-    return MessageResponse(**new_message.__dict__, sender=UserInfo(**current_user.__dict__))
+    return MessageResponse(**new_message.__dict__)
 
 
 @router.patch("/messages/{message_id}", response_model=MessageResponse)
@@ -329,7 +329,7 @@ async def update_message(
     await db.commit()
     await db.refresh(message)
     
-    return MessageResponse(**message.__dict__, sender=UserInfo(**message.sender.__dict__))
+    return MessageResponse(**message.__dict__)
 
 
 @router.delete("/messages/{message_id}", status_code=204)
@@ -415,7 +415,7 @@ async def add_participant(
     # Add to connection manager
     manager.add_user_to_conversation(participant_data.user_id, conversation_id)
     
-    return ConversationParticipantResponse(**new_participant.__dict__, user=UserInfo(**new_participant.user.__dict__))
+    return ConversationParticipantResponse(**new_participant.__dict__)
 
 
 @router.get("/users/active", response_model=List[UserStatus])

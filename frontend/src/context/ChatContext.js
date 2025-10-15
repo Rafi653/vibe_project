@@ -3,7 +3,7 @@
  * Manages WebSocket connection and chat state
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { getWebSocketUrl } from '../services/chatService';
 
 const ChatContext = createContext();
@@ -23,62 +23,7 @@ export const ChatProvider = ({ children }) => {
     const [activeUsers, setActiveUsers] = useState(new Set());
     const [typingUsers, setTypingUsers] = useState({});
     const [unreadCounts, setUnreadCounts] = useState({});
-
-    // Connect to WebSocket
-    const connect = useCallback(() => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.log('No token found, skipping WebSocket connection');
-            return;
-        }
-
-        try {
-            const wsUrl = getWebSocketUrl();
-            const websocket = new WebSocket(wsUrl);
-
-            websocket.onopen = () => {
-                console.log('WebSocket connected');
-                setIsConnected(true);
-            };
-
-            websocket.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
-                    handleWebSocketMessage(data);
-                } catch (error) {
-                    console.error('Error parsing WebSocket message:', error);
-                }
-            };
-
-            websocket.onerror = (error) => {
-                console.error('WebSocket error:', error);
-            };
-
-            websocket.onclose = () => {
-                console.log('WebSocket disconnected');
-                setIsConnected(false);
-                
-                // Attempt to reconnect after 3 seconds
-                setTimeout(() => {
-                    console.log('Attempting to reconnect...');
-                    connect();
-                }, 3000);
-            };
-
-            setWs(websocket);
-        } catch (error) {
-            console.error('Error connecting to WebSocket:', error);
-        }
-    }, []);
-
-    // Disconnect from WebSocket
-    const disconnect = useCallback(() => {
-        if (ws) {
-            ws.close();
-            setWs(null);
-            setIsConnected(false);
-        }
-    }, [ws]);
+    const reconnectTimeout = useRef();
 
     // Handle incoming WebSocket messages
     const handleWebSocketMessage = useCallback((data) => {
@@ -145,6 +90,71 @@ export const ChatProvider = ({ children }) => {
         }
     }, []);
 
+    // Connect to WebSocket
+    const connect = useCallback(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.log('No token found, skipping WebSocket connection');
+            return;
+        }
+
+        try {
+            const wsUrl = getWebSocketUrl();
+            const websocket = new WebSocket(wsUrl);
+
+            websocket.onopen = () => {
+                console.log('WebSocket connected');
+                setIsConnected(true);
+            };
+
+            websocket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleWebSocketMessage(data);
+                } catch (error) {
+                    console.error('Error parsing WebSocket message:', error);
+                }
+            };
+
+            websocket.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+
+            websocket.onclose = () => {
+                console.log('WebSocket disconnected');
+                setIsConnected(false);
+                
+                // Only set timeout if not already set
+                if (!reconnectTimeout.current) {
+                    reconnectTimeout.current = setTimeout(() => {
+                        console.log('Attempting to reconnect...');
+                        connect();
+                        reconnectTimeout.current = null;
+                    }, 3000);
+                }
+            };
+            //     // Attempt to reconnect after 3 seconds
+            //     setTimeout(() => {
+            //         console.log('Attempting to reconnect...');
+            //         connect();
+            //     }, 3000);
+            // };
+
+            setWs(websocket);
+        } catch (error) {
+            console.error('Error connecting to WebSocket:', error);
+        }
+    }, [handleWebSocketMessage]);
+
+    // Disconnect from WebSocket
+    const disconnect = useCallback(() => {
+        if (ws) {
+            ws.close();
+            setWs(null);
+            setIsConnected(false);
+        }
+    }, [ws]);
+
     // Send typing indicator
     const sendTypingIndicator = useCallback((conversationId, isTyping) => {
         if (ws && isConnected) {
@@ -185,8 +195,14 @@ export const ChatProvider = ({ children }) => {
     // Connect on mount, disconnect on unmount
     useEffect(() => {
         connect();
-        return () => disconnect();
-    }, []);
+        return () => {
+            disconnect();
+            if (reconnectTimeout.current) {
+                clearTimeout(reconnectTimeout.current);
+            }
+        };
+        // return () => disconnect();
+    }, [connect, disconnect]);
 
     const value = {
         ws,

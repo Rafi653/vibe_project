@@ -231,6 +231,8 @@ async def test_get_conversation_with_messages(auth_token, test_users, test_db):
 async def test_update_message(auth_token, test_users, test_db):
     """Test updating a message"""
     # Create a message first
+    print(test_users)
+
     async with test_db as session:
         conversation = Conversation(
             conversation_type=ConversationType.DIRECT,
@@ -246,7 +248,7 @@ async def test_update_message(auth_token, test_users, test_db):
         )
         session.add(participant)
         await session.flush()
-        
+        print(test_users[0].id)
         message = Message(
             conversation_id=conversation.id,
             sender_id=test_users[0].id,

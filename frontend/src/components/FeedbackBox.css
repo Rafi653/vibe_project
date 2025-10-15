@@ -137,6 +137,24 @@
   min-height: 120px;
 }
 
+.character-counter {
+  font-size: 0.85rem;
+  color: #666;
+  text-align: right;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.character-counter.warning {
+  color: #f59e0b;
+}
+
+.character-counter.limit-reached {
+  color: #ef4444;
+  font-weight: 600;
+}
+
 .checkbox-group label {
   display: flex;
   align-items: center;

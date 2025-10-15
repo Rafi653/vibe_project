@@ -12,7 +12,19 @@ Vibe Project is a comprehensive fitness coaching application designed to connect
 
 ## Key Features
 
-### 📊 Charts and Dashboards (NEW!)
+### 💬 In-App Chat (NEW!)
+Real-time messaging system for seamless communication:
+- **Direct Messaging**: 1:1 conversations between users
+- **Group Chats**: Create and manage group conversations
+- **Real-time Updates**: WebSocket-based instant messaging
+- **Typing Indicators**: See when others are typing
+- **Read Receipts**: Know when messages are read
+- **Active User Tracking**: See who's online
+- **Message Management**: Edit and delete your messages
+
+See [CHAT_FEATURE.md](CHAT_FEATURE.md) and [CHAT_QUICK_START.md](CHAT_QUICK_START.md) for details.
+
+### 📊 Charts and Dashboards
 Interactive charts and analytics for tracking progress and engagement:
 - **Client Dashboard**: Workout frequency, diet adherence, macros tracking, strength progress
 - **Coach Dashboard**: Client activity overview, engagement trends, plan assignments
@@ -41,7 +53,7 @@ See [CHARTS_QUICK_START.md](CHARTS_QUICK_START.md) and [CHARTS_DOCUMENTATION.md]
 
 ### Additional Services
 - **File Storage**: AWS S3 or similar for media files
-- **Real-time Features**: WebSockets for live updates
+- **Real-time Features**: WebSockets for live chat updates ✅
 - **Email Service**: SendGrid or AWS SES
 - **Analytics**: Google Analytics, Mixpanel
 

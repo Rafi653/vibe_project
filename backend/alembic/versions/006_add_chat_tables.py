@@ -21,7 +21,7 @@ def upgrade() -> None:
     op.create_table(
         'conversations',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('type', sa.Enum('DIRECT', 'GROUP', name='conversationtype'), nullable=False),
+        sa.Column('type', sa.Enum('direct', 'group', name='conversationtype'), nullable=False),
         sa.Column('name', sa.String(length=255), nullable=True),
         sa.Column('created_by_id', sa.Integer(), nullable=False),
         sa.Column('created_at', sa.DateTime(), nullable=False),

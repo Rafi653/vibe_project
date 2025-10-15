@@ -9,6 +9,7 @@ from app.models.workout_plan import WorkoutPlan, PlanStatus
 from app.models.diet_plan import DietPlan
 from app.models.feedback import Feedback
 from app.models.booking import Booking, BookingStatus
+from app.models.chat import Conversation, ConversationParticipant, Message, ConversationType
 
 __all__ = [
     "User",
@@ -22,4 +23,8 @@ __all__ = [
     "Feedback",
     "Booking",
     "BookingStatus",
+    "Conversation",
+    "ConversationParticipant",
+    "Message",
+    "ConversationType",
 ]

@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import './FeedbackBox.css';
 
 function FeedbackBox() {
+  const MAX_CHARACTERS = 1500;
   const { user, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -108,12 +109,19 @@ function FeedbackBox() {
                   <textarea
                     id="message"
                     value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    onChange={(e) => {
+                      const newValue = e.target.value.slice(0, MAX_CHARACTERS);
+                      setFormData({ ...formData, message: newValue });
+                    }}
                     required
                     disabled={isSubmitting}
                     rows="5"
                     placeholder="Share your thoughts, suggestions, or report issues..."
+                    maxLength={MAX_CHARACTERS}
                   />
+                  <div className={`character-counter ${formData.message.length >= MAX_CHARACTERS ? 'limit-reached' : formData.message.length >= MAX_CHARACTERS * 0.9 ? 'warning' : ''}`}>
+                    {formData.message.length} / {MAX_CHARACTERS} characters
+                  </div>
                 </div>
 
                 {!isAuthenticated && (

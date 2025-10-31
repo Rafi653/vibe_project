@@ -18,6 +18,11 @@ python-multipart==0.0.12
 # CORS
 python-dotenv==1.0.1
 
+# WebSocket & Real-time Communication
+websockets==12.0
+python-socketio==5.11.0
+redis==5.0.1
+
 # Development
 pytest==8.3.3
 pytest-cov

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ChatProvider } from './context/ChatContext';
 import Navigation from './components/Navigation';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login';
@@ -8,6 +9,7 @@ import Signup from './components/Signup';
 import FeedbackBox from './components/FeedbackBox';
 import Home from './pages/common/Home';
 import FeatureDetails from './pages/common/FeatureDetails';
+import Chat from './pages/common/Chat';
 import ClientDashboard from './pages/client/ClientDashboard';
 import ClientProfile from './pages/client/ClientProfile';
 import CoachDashboard from './pages/coach/CoachDashboard';
@@ -19,15 +21,16 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <div className="App">
-          <Navigation />
-          <FeedbackBox />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/features/:featureId" element={<FeatureDetails />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
+        <ChatProvider>
+          <div className="App">
+            <Navigation />
+            <FeedbackBox />
+            <main className="main-content">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/features/:featureId" element={<FeatureDetails />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
               
               {/* Protected Routes */}
               <Route 
@@ -70,9 +73,18 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/chat" 
+                element={
+                  <ProtectedRoute requiredRole={['client', 'coach', 'admin']}>
+                    <Chat />
+                  </ProtectedRoute>
+                } 
+              />
             </Routes>
           </main>
         </div>
+        </ChatProvider>
       </AuthProvider>
     </Router>
   );

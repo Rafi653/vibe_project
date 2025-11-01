@@ -48,11 +48,28 @@ See [CHARTS_QUICK_START.md](CHARTS_QUICK_START.md) and [CHARTS_DOCUMENTATION.md]
 ## Directory Structure
 ```
 vibe_project/
+├── .github/          # GitHub-specific files (issue templates, workflows)
 ├── backend/          # Backend API and server-side logic
 ├── frontend/         # Frontend application and UI components
 ├── README.md         # Project documentation (this file)
 └── .gitignore        # Git ignore rules
 ```
+
+## Project Roadmap
+This project follows a structured development roadmap outlined in [Issue #1](https://github.com/Rafi653/vibe_project/issues/1). The development is broken down into 10 sequential steps:
+
+1. ✅ Initialize Repository Structure (Completed)
+2. 🚧 Set Up Backend Framework ([Issue #4](https://github.com/Rafi653/vibe_project/issues/4))
+3. 🚧 Set Up Frontend Framework ([Issue #5](https://github.com/Rafi653/vibe_project/issues/5))
+4. 🚧 Database Setup ([Issue #6](https://github.com/Rafi653/vibe_project/issues/6))
+5. ⬜ Authentication & Role-Based Access Control
+6. ⬜ Core Features Implementation
+7. ⬜ Charts and Dashboards
+8. ⬜ Dockerization
+9. ⬜ Testing & Documentation
+10. ⬜ Deployment Preparation
+
+For detailed issue templates and creation scripts, see the [`.github` directory](.github/README.md).
 
 ## Getting Started
 

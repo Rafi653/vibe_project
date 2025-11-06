@@ -4,6 +4,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { login as loginService, signup as signupService, logout as logoutService, getCurrentUser } from '../services/authService';
+import { setTokenExpiredCallback } from '../services/apiClient';
 
 const AuthContext = createContext(null);
 
@@ -26,6 +27,25 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Handle token expiration - redirect to home page
+  const handleTokenExpired = () => {
+    console.log('Token expired - logging out user');
+    
+    // Clear local state
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    setError('Your session has expired. Please log in again.');
+    
+    // Redirect to home page
+    window.location.href = '/';
+  };
+
+  // Register token expiration callback
+  useEffect(() => {
+    setTokenExpiredCallback(handleTokenExpired);
+  }, []);
 
   // Load user on mount if token exists
   useEffect(() => {

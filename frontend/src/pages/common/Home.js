@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Home.css';
 
 function Home() {
+  const { isAuthenticated } = useAuth();
   const testimonials = [
     {
       id: 1,
@@ -155,15 +157,17 @@ function Home() {
           </div>
         </section>
 
-        {/* Call to Action */}
-        <section className="cta-section">
-          <h2>Ready to Start Your Journey?</h2>
-          <p>Join thousands of others achieving their fitness goals with Vibe Fitness</p>
-          <div className="cta-buttons">
-            <Link to="/signup" className="cta-button primary">Get Started Free</Link>
-            <Link to="/login" className="cta-button secondary">Sign In</Link>
-          </div>
-        </section>
+        {/* Call to Action - Only show for non-authenticated users */}
+        {!isAuthenticated && (
+          <section className="cta-section">
+            <h2>Ready to Start Your Journey?</h2>
+            <p>Join thousands of others achieving their fitness goals with Vibe Fitness</p>
+            <div className="cta-buttons">
+              <Link to="/signup" className="cta-button primary">Get Started Free</Link>
+              <Link to="/login" className="cta-button secondary">Sign In</Link>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
